@@ -170,6 +170,21 @@ textarea {
   <span id="apercu_lien"></span>téléchargez le fichier, puis ouvrez-le par un double-clic dans
   <strong>Chrome</strong> ou <strong>Edge</strong>.
 </div>
+<!-- Aperçu avec version en ligne : le formulaire est masqué et renvoie vers la page en ligne -->
+<div id="voile" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(60,64,67,.92);
+     align-items:center;justify-content:center;padding:16px">
+  <div style="background:#fff;max-width:520px;width:100%;padding:28px 26px;border-top:6px solid #F6A51A;
+       text-align:center;font-size:16px;line-height:1.5">
+    <div style="font-size:20px;font-weight:700;margin-bottom:10px">Ouvrez le formulaire dans votre navigateur</div>
+    <p style="margin:0 0 20px">Cet aperçu (Teams, Outlook ou autre) ne permet pas d'envoyer la demande.
+      Le formulaire s'ouvre dans un nouvel onglet.</p>
+    <a id="voile_lien" href="#" target="_blank" rel="noopener"
+       style="display:inline-block;background:#F6A51A;color:#222;font-weight:700;text-decoration:none;
+       padding:14px 26px;font-size:17px">Ouvrir le formulaire</a>
+    <p style="margin:18px 0 0;font-size:13px;color:#555">Si rien ne s'ouvre, copiez cette adresse dans Chrome ou Edge :<br>
+      <span id="voile_adresse" style="user-select:all;color:#222"></span></p>
+  </div>
+</div>
 
 <div class="reglages">
   <div class="reglages-i">
@@ -823,11 +838,17 @@ function enApercu() {
 }
 (function avertirApercu() {
   if (!enApercu()) return;
-  document.getElementById('apercu').style.display = 'block';
   if (URL_EN_LIGNE && URL_EN_LIGNE.indexOf('__') !== 0) {
-    document.getElementById('apercu_lien').innerHTML =
-      'ouvrez plutôt <a href="' + URL_EN_LIGNE + '" target="_blank" rel="noopener">la version en ligne</a>, ou ';
+    // Version en ligne connue : on masque le formulaire, on tente l'ouverture
+    // automatique (souvent bloquée par l'aperçu), et le bouton reste là.
+    const v = document.getElementById('voile');
+    document.getElementById('voile_lien').href = URL_EN_LIGNE;
+    document.getElementById('voile_adresse').textContent = URL_EN_LIGNE;
+    v.style.display = 'flex';
+    try { window.open(URL_EN_LIGNE, '_blank', 'noopener'); } catch (e) {}
+    return;
   }
+  document.getElementById('apercu').style.display = 'block';
 })();
 let CODE = '';
 function b64url(octets) {
