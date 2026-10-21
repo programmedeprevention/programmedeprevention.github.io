@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prevention program request: ACQ</title>
+<style>
+:root {
+  --orange: #F6A51A;
+  --ardoise: #4D5353;
+  --encre: #2B2F2F;
+  --papier: #FFFFFF;
+  --trame: #F4F4F4;
+  --trait: #D6D6D6;
+  --rouge: #C0392B;
+  --ambre: #E67E22;
+  --vert: #6B8E23;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font: 15px/1.5 Arial, "Helvetica Neue", Helvetica, sans-serif;
+  color: var(--encre);
+  background: var(--trame);
+}
+
+/* — bandeau de tête, fixe : le compte doit rester visible — */
+header {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--ardoise); color: #fff;
+  border-bottom: 3px solid var(--orange);
+}
+.tete {
+  max-width: 1080px; margin: 0 auto; padding: 14px 20px;
+  display: flex; flex-wrap: wrap; gap: 18px; align-items: center;
+}
+.marque { font-weight: bold; font-size: 20px; letter-spacing: .5px; }
+.marque span { color: var(--orange); }
+.tete a.langue { color: #fff; font-size: 13px; text-decoration: underline; margin-left: 12px; white-space: nowrap; }
+.tete h1 { font-size: 15px; font-weight: normal; margin: 0; opacity: .85; flex: 1 1 260px; }
+
+.compte {
+  background: var(--orange); color: #1a1a1a;
+  padding: 6px 14px; font-weight: bold; white-space: nowrap;
+}
+.compte b { font-size: 22px; }
+
+/* — réglages — */
+.reglages {
+  background: var(--papier); border-bottom: 1px solid var(--trait);
+}
+.reglages-i {
+  max-width: 1080px; margin: 0 auto; padding: 16px 20px;
+  display: flex; flex-wrap: wrap; gap: 22px; align-items: flex-end;
+}
+label.champ { display: block; font-size: 12px; color: #666; margin-bottom: 4px; }
+select, input[type=text] {
+  font: 15px Arial, sans-serif; padding: 7px 9px;
+  border: 1px solid var(--trait); background: #fff; color: var(--encre);
+  min-width: 220px;
+}
+select:focus, input:focus, button:focus {
+  outline: 2px solid var(--orange); outline-offset: 1px;
+}
+
+button {
+  font: bold 14px Arial, sans-serif; padding: 9px 16px; cursor: pointer;
+  border: 1px solid var(--ardoise); background: var(--ardoise); color: #fff;
+}
+button:hover { background: #3d4242; }
+button.pale { background: #fff; color: var(--ardoise); }
+a.bouton { display: inline-block; font: inherit; font-size: 14px; padding: 8px 14px; border: 1px solid var(--ardoise); border-radius: 6px; background: #fff; color: var(--ardoise); text-decoration: none; margin: 2px 4px 2px 0; }
+a.bouton:hover { background: var(--trame); }
+#envoi ol { margin: 10px 0 0 20px; padding: 0; line-height: 1.6; }
+#envoi li { margin-bottom: 10px; }
+button.pale:hover { background: var(--trame); }
+button.vif { background: var(--orange); border-color: var(--orange); color: #1a1a1a; }
+button.vif:hover { background: #e09612; }
+
+main { max-width: 1080px; margin: 0 auto; padding: 22px 20px 90px; }
+
+.avis {
+  background: #FFF8E8; border-left: 4px solid var(--orange);
+  padding: 12px 16px; margin-bottom: 22px; font-size: 14px;
+}
+
+/* — thèmes — */
+.theme { background: var(--papier); border: 1px solid var(--trait); margin-bottom: 14px; }
+.theme > summary {
+  padding: 12px 16px; cursor: pointer; font-weight: bold;
+  display: flex; align-items: center; gap: 12px;
+  border-left: 4px solid var(--ardoise);
+}
+.theme[open] > summary { border-bottom: 1px solid var(--trait); }
+.theme > summary::-webkit-details-marker { display: none; }
+.theme > summary::before {
+  content: "▸"; color: var(--ardoise); font-size: 13px; transition: transform .12s;
+}
+.theme[open] > summary::before { transform: rotate(90deg); }
+.jauge { margin-left: auto; font-weight: normal; font-size: 13px; color: #666; }
+.jauge b { color: var(--orange); }
+
+/* — lignes de situation : une grille d'inspection, non des cartes — */
+.ligne {
+  display: grid; grid-template-columns: 34px 52px 1fr 78px;
+  gap: 10px; align-items: start;
+  padding: 9px 16px; border-top: 1px solid #EDEDED;
+}
+.ligne:first-of-type { border-top: none; }
+.ligne:hover { background: #FAFAFA; }
+.ligne.obl { background: #FFFCF4; }
+.ligne input[type=checkbox] { width: 18px; height: 18px; margin-top: 2px; cursor: pointer; }
+.ligne input:disabled { cursor: not-allowed; }
+.num { color: #999; font-size: 13px; padding-top: 2px; font-variant-numeric: tabular-nums; }
+.titre { font-weight: bold; }
+.desc { font-size: 13px; color: #555; margin-top: 2px; }
+.verrou { font-size: 11px; color: var(--orange); font-weight: bold; }
+
+.risque {
+  font-size: 11px; text-align: center; padding: 3px 0;
+  color: #fff; font-weight: bold; letter-spacing: .3px;
+}
+.CRITICAL, .VERY { background: var(--rouge); }
+.HIGH { background: var(--ambre); }
+.MODERATE { background: #B8A038; }
+.LOW { background: var(--vert); }
+
+/* — pied fixe : l'export — */
+.pied {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+  background: var(--papier); border-top: 2px solid var(--ardoise);
+}
+.pied-i {
+  max-width: 1080px; margin: 0 auto; padding: 12px 20px;
+  display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+}
+.pied .sortie { flex: 1 1 auto; font-size: 13px; color: #666; }
+
+textarea {
+  width: 100%; height: 190px; font: 13px/1.45 "Courier New", monospace;
+  border: 1px solid var(--trait); padding: 12px; display: block;
+}
+
+@media (max-width: 620px) {
+  .ligne { grid-template-columns: 30px 44px 1fr; }
+  .risque { display: none; }
+  .tete h1 { flex-basis: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="tete">
+    <img class="logo" src="data:image/png;base64,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" alt="Association de la construction du Québec" style="height:46px;width:auto;display:block">
+    <h1>Work situation identification grid</h1>
+    <div class="compte"><b id="n">0</b> situation<span id="s"></span></div>
+    <a class="langue" href="https://programmedeprevention.github.io/" hreflang="fr" lang="fr">Français</a>
+  </div>
+</header>
+
+<!-- Warning: form opened in a preview (Teams, Outlook, etc.) where sending is blocked -->
+<div id="apercu" style="display:none;background:#FDECEA;border-left:6px solid #C0392B;
+     padding:14px 18px;margin:0;font-size:15px;line-height:1.45">
+  <strong>This form is open in a preview (Teams, Outlook or other).</strong>
+  The request cannot be sent from there. Before filling it in:
+  <span id="apercu_lien"></span>download the file, then open it by double-clicking it in
+  <strong>Chrome</strong> or <strong>Edge</strong>.
+</div>
+<!-- Preview with an online version: the form is hidden and points to the online page -->
+<div id="voile" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(60,64,67,.92);
+     align-items:center;justify-content:center;padding:16px">
+  <div style="background:#fff;max-width:520px;width:100%;padding:28px 26px;border-top:6px solid #F6A51A;
+       text-align:center;font-size:16px;line-height:1.5">
+    <div style="font-size:20px;font-weight:700;margin-bottom:10px">Open the form in your browser</div>
+    <p style="margin:0 0 20px">This preview (Teams, Outlook or other) does not allow the request to be sent.
+      The form opens in a new tab.</p>
+    <a id="voile_lien" href="#" target="_blank" rel="noopener"
+       style="display:inline-block;background:#F6A51A;color:#222;font-weight:700;text-decoration:none;
+       padding:14px 26px;font-size:17px">Open the form</a>
+    <p style="margin:18px 0 0;font-size:13px;color:#555">If nothing opens, copy this address into Chrome or Edge:<br>
+      <span id="voile_adresse" style="user-select:all;color:#222"></span></p>
+  </div>
+</div>
+<div class="reglages">
+  <div class="reglages-i">
+    <div>
+      <label class="champ" for="ctx">Program type</label>
+      <select id="ctx">
+        <option value="chantier">Construction site</option>
+        <option value="etablissement">Establishment</option>
+        <option value="maitre_oeuvre">Construction site: principal contractor</option>
+      </select>
+    </div>
+    <div>
+      <label class="champ" for="met">Trade or sector</label>
+      <select id="met"></select>
+    </div>
+    <div>
+      <label class="champ" for="employeur">Employer's legal name <span class="oblig">required</span></label>
+      <input type="text" id="employeur" placeholder="Required">
+    </div>
+    <div>
+      <label class="champ" for="chantier">Site or project</label>
+      <input type="text" id="chantier" placeholder="Optional">
+    </div>
+    <div>
+      <label class="champ" for="date">Creation date</label>
+      <input type="date" id="date">
+    </div>
+    <div>
+      <label class="champ" for="qui">Completed by</label>
+      <input type="text" id="qui" placeholder="Your name">
+    </div>
+    <!-- Personnalisation du programme : sous « Rempli par », au-dessus de l'affichage -->
+    <div id="fiche" style="flex:1 1 100%"></div>
+    <div>
+      <label class="champ" for="filtre">Display</label>
+      <select id="filtre">
+        <option value="metier">Relevant to this trade</option>
+        <option value="tout">All situations</option>
+      </select>
+    </div>
+    <button class="pale" id="ouvrir">Expand all</button>
+  </div>
+</div>
+
+<main>
+  <div class="avis" id="avis_mo" style="display:none;background:#FDF5E4;
+       border-left-color:#F6A51A">
+    You are producing the <strong>site prevention program</strong>.
+    It is added to each employer's program and does not replace it. It
+    covers what belongs to no employer in particular: traffic, access,
+    shared facilities, <strong>coactivity</strong> and rescue. Check the
+    situations present anywhere on the site, for all trades combined.
+  </div>
+  <div class="avis">
+    The selected trade checks the <strong>usual situations</strong>.
+    Add or remove situations based on what you see on the site: that is the
+    purpose of the exercise. Situations marked <em>mandatory</em> cannot be
+    unchecked: they appear in every program.
+  </div>
+  <div id="tronc"></div>
+  <div id="liste"></div>
+  <div class="avis" id="envoye" style="display:none;background:#EEF4EE;border-left-color:#6B8E23;margin-top:22px">
+    <strong>Your request has been sent to the ACQ.</strong>
+    Thank you. Your prevention program will be prepared from your answers,
+    then reviewed before it is sent to you. You may close this page.
+  </div>
+  <div id="repli" style="display:none">
+    <div class="avis" id="envoi" style="background:#FDF5E4;border-left-color:#F6A51A;margin-top:22px">
+      <strong>The request could not be sent.</strong>
+      <br><small id="raison_echec" style="color:#8a4b00"></small><br>
+      Your answers are kept on this page. Check your Internet connection, then click
+      <em>Submit request</em> again. If the problem persists, click <em>Save file</em> and
+      send that file to your ACQ prevention advisor.
+    </div>
+    <textarea id="sortie" readonly></textarea>
+  </div>
+</main>
+
+<div class="pied">
+  <div class="pied-i">
+    <span class="sortie" id="etat">Choose a trade to begin.</span>
+    <button class="pale" id="afficher">Show result</button>
+    <button class="pale" id="exporter">Save file</button>
+    <button class="vif" id="soumettre">Submit request</button>
+  </div>
+</div>
+
+<script>
+const D = {"fiche_etablissement":[{"code":"entreprise","libelle":"Legal name","type":"texte","requis":true},{"code":"code_employeur","libelle":"Employer code","type":"texte","requis":true,"note":"It names the employer's folder on the network and in the program's QR code."},{"code":"code_etablissement","libelle":"Establishment code","type":"texte","requis":true,"note":"It names the establishment's folder on the network."},{"code":"adresse","libelle":"Full address of the establishment","type":"texte"},{"code":"num_employeur","libelle":"CNESST employer number","type":"texte"},{"code":"unite","libelle":"Classification unit","type":"texte"},{"code":"secteur","libelle":"Business sector","type":"texte"},{"code":"mutuelle","libelle":"Prevention mutual, if applicable","type":"texte"},{"code":"quarts","libelle":"Number of shifts","type":"nombre"},{"code":"responsable_etab","libelle":"Establishment manager","type":"texte"},{"code":"coactivite","libelle":"Contractors or subcontractors working in the establishment","type":"oui_non","situation":122,"note":"If yes, the **Coactivity** section is added to the program."},{"code":"postes_bureau","libelle":"Do you have computer workstations?","type":"oui_non","situation":218,"note":"If yes, the **Office ergonomics** sheet is added to the Ergonomics and MSD section."}],"sauvetage":{"cible":129,"hauteur":[1,2,3,4,5,6,7,9,11,126,127,177,178,179,181,188,259,273]},"fiche_chantier":[{"code":"entreprise","libelle":"Legal name","type":"texte","requis":true,"groupe":"Site identification"},{"code":"nom_chantier","libelle":"Site name / Project","type":"texte"},{"code":"adresse","libelle":"Site address","type":"texte"},{"code":"equipements_exploitation","libelle":"Equipment in operation during the work","type":"oui_non","note":"If yes, the **lockout program** applies."},{"code":"coactivite","libelle":"Planned coactivity with other trades","type":"oui_non","situation":122,"note":"If yes, the **Coactivity** section is added to the program."},{"code":"postes_bureau","libelle":"Do you have computer workstations (office, site trailer, estimating)?","type":"oui_non","situation":218,"note":"If yes, the **Office ergonomics** sheet is added to the Ergonomics and MSD section."},{"code":"effectif_max","libelle":"Maximum number of workers present at the same time","type":"nombre","note":"**10**: prevention program and representative · **20**: worksite committee · **100**: safety coordinator."},{"code":"cout_travaux","libelle":"Total estimated cost of the work","type":"texte"},{"code":"date_avis","libelle":"Planned date of the notice of opening to the CNESST","type":"date","note":"At least **10 days** before work begins."},{"code":"responsable_sst","libelle":"OHS manager","type":"texte"},{"code":"coss","libelle":"Health and safety coordinator (CoSS)","type":"texte","note":"If there is one on the site. The coordinator then gives the OHS orientation."},{"code":"surintendant","libelle":"Site superintendent","type":"texte"},{"code":"maitre_oeuvre","libelle":"Principal contractor","type":"texte"},{"code":"tel_urgence","libelle":"Emergency telephone on site","type":"texte"},{"code":"responsable_urgence","groupe":"Emergency response organization","libelle":"Emergency measures manager","type":"texte"},{"code":"substitut","libelle":"Alternate","type":"texte"},{"code":"secouristes","libelle":"Designated first aiders and shift coverage","type":"texte","note":"Name of each first aider and the shift they cover."},{"code":"rassemblement_principal","libelle":"Main assembly point","type":"texte"},{"code":"rassemblement_secondaire","libelle":"Secondary assembly point","type":"texte"},{"code":"trousse","libelle":"First-aid kit","type":"texte","note":"Location."},{"code":"extincteurs","libelle":"Fire extinguishers","type":"texte","note":"Locations."},{"code":"douche_oculaire","libelle":"Eyewash station or eyewash bottle","type":"texte","note":"Location, if any."},{"code":"adresse_911","libelle":"Address to give to 911","type":"texte","note":"If it differs from the site address. Left blank, the site address is used."},{"code":"acces_urgence","libelle":"Access point for emergency vehicles","type":"texte"},{"code":"hopital","libelle":"Nearest hospital or clinic","type":"texte"},{"code":"moyen_alerte","libelle":"Alarm method (horn, radio, whistle)","type":"texte"},{"code":"pae","libelle":"Employee assistance program (EAP)","type":"texte","note":"Provider name and telephone."},{"code":"designee_nom","groupe":"Harassment and violence prevention policy","libelle":"Person designated to receive complaints","type":"texte","note":"Named in the policy."},{"code":"designee_fonction","libelle":"Position of the designated person","type":"texte"},{"code":"designee_telephone","libelle":"Telephone of the designated person","type":"texte"},{"code":"designee_courriel","libelle":"Email of the designated person","type":"texte"}],"section":{"1":"chutes","2":"chutes/toiture","3":"chutes/echafaudage","4":"chutes/motorisees","5":"chutes/motorisees","6":"chutes/pemp","7":"chutes/pemp","9":"chutes/echelle","11":"chutes","126":"chutes","127":"chutes/ancrages","129":"chutes/sauvetage","12":"espaces_clos","130":"espaces_clos","13":"excavation","106":"excavation/gaz_souterrain","97":"fondations","95":"fondations","100":"fondations","101":"souterrain","15":"eau","17":"eau","20":"machinerie","18":"machinerie/chariots","19":"machinerie/chariots","23":"machinerie/chariots","25":"machinerie","27":"routier","107":"souterrain","30":"levage","31":"levage/grues","32":"levage/grues","34":"levage/palans","35":"levage","125":"objets","37":"electrique","38":"electrique","39":"electrique","40":"electrique","41":"cadenassage","42":"chaud","43":"chaud/soudage","48":"chaud/gaz","50":"chaud","51":"demolition","52":"contaminants","54":"contaminants","55":"contaminants","56":"biologique","57":"sols_contamines","58":"contaminants","290":"chimique","61":"contaminants","63":"contaminants","65":"contaminants","66":"thermique_ambiance","67":"thermique_ambiance","68":"outils","70":"outils/cartouche","71":"outils/scies","73":"outils/scies","74":"outils/percussion","75":"machines_mouvement","76":"coffrages","79":"beton","81":"empalement","87":"structure_instable","89":"bitume","92":"pression","93":"frigorigenes","111":"ergonomie","113":"ergonomie","114":"thermique_ambiance","115":"thermique_ambiance","117":"vent","118":"eclairage","119":"travail_isole","120":"public","122":"coactivite","123":"objets","999":"psycho","131":"outils/couteau","132":"machinerie/recul","133":"milieu_contamine","134":"combustion","135":"co2","136":"pavage","137":"machinerie/concassage","138":"espaces_clos/tambour","139":"machinerie/vtt","140":"carburant","141":"epi","142":"contaminants","143":"deboisement","144":"paysager","145":"arpentage","146":"enfouissement","147":"carriere","148":"laser","149":"fondations/puits","150":"demantelement","151":"pontage","152":"fermes","153":"deneigement","154":"maconnerie","155":"ventilation","156":"aluminothermique","157":"tirage","158":"pliage","159":"pression/essai","160":"calorifugeage","161":"ignifugation","162":"finition","163":"voirie","164":"marquage","165":"serrurerie","166":"lignes_transport","167":"sciage_beton","168":"mobilisation","169":"monoxyde","170":"jet","171":"portes","172":"entretien","173":"livraison","174":"eolienne","175":"transport","176":"droit_refus","177":"chutes/consoles","178":"chutes/cric","179":"chutes/hydraulique","180":"electrique/sous_station","181":"chutes/camion_nacelle","182":"levage/echelle_moteur","183":"demantelement/treuil","184":"portes/niveleur","185":"maconnerie/melangeur","186":"machines_mouvement/plieuse","187":"machinerie/usine","188":"chutes/arracheuse","189":"ignifugation/malaxeur","190":"berlinois","191":"plongee","192":"vacuum","193":"demolition","194":"machinerie/compactage","195":"installations/eau","196":"installations/sanitaires","197":"installations/escalier","198":"installations/fatigue","199":"arrimage","200":"outils/cloueuse","201":"machines_mouvement/touret","202":"machines_mouvement/presse_plieuse","203":"machines_mouvement/scie_ruban","204":"machines_mouvement/perceuse_colonne","205":"machines_mouvement/cisaille","206":"machines_mouvement/fraiseuse","207":"atelier","208":"atelier/demonte_pneu","209":"atelier/cage_gonflage","210":"atelier/balanceuse","211":"atelier/degauchisseuse","212":"atelier/raboteuse","213":"atelier/ponceuse","214":"atelier/scie_diamant","215":"atelier/tailleur_pierre","216":"atelier/jet_sable","217":"atelier/ventouse","218":"ergonomie/bureau","219":"bureau/plain_pied","220":"route","221":"bureau/teletravail","222":"atelier/toupie","223":"atelier/tenonneuse","224":"atelier/cnc","225":"atelier/depoussiereur","226":"atelier/convoyeur","227":"atelier/table_elevatrice","228":"atelier/butee_automatique","229":"atelier/lamelleuse","230":"atelier/plaqueuse_chants","231":"atelier/mortaiseuse","232":"atelier/gougeons","233":"laser/decoupe","234":"objets/palettier","235":"atelier/presse","236":"atelier/scie_radiale","237":"atelier/cabine_peinture","238":"atelier/chargement_batteries","239":"atelier/chambre_melange","240":"machinerie/chariot_vertical","241":"atelier/presse_balles","242":"atelier/guillotine","243":"atelier/decoupe_pierre","244":"atelier/polisseuse_pierre","245":"sciage_beton/fil_diamante","246":"atelier/routeur_cnc_pierre","247":"levage/pont_roulant","248":"atelier/sertisseuse","249":"atelier/fosse_reparation","250":"atelier/pont_elevateur","251":"deboisement/elagage","252":"eau/batardeau","253":"eau/barges","254":"eau/embarcation","255":"demolition/hydrodemolition","256":"chaud/plasma","257":"electrique/multimetre","258":"levage/verins","259":"chutes/ascenseur_chantier","260":"atelier/chargement_pneus","261":"maitre_oeuvre","262":"psycho","263":"psycho","264":"psycho","265":"psycho","266":"psycho","267":"psycho","268":"psycho","269":"psycho","270":"psycho","271":"psycho","272":"surveillance","273":"chutes/passerelle_pont","274":"ergonomie/tms_couvreur","275":"ergonomie/tms_briqueteur","276":"ergonomie/tms_carreleur","277":"ergonomie/tms_systemes","278":"ergonomie/tms_platrier","279":"ergonomie/tms_ferrailleur","280":"ergonomie/tms_cimentier","281":"ergonomie/tms_charpentier","282":"ergonomie/tms_revetements","283":"ergonomie/tms_vitrier","284":"ergonomie/tms_manoeuvre","285":"ergonomie/tms_calorifugeur","286":"ergonomie/tms_ferblantier","287":"ergonomie/tms_tuyauteur","288":"ergonomie/tms_monteur","289":"ergonomie/tms_electricien"},"tronc_existant":[],"pertinentes":{"calorifugeur":[1,2,3,4,5,6,7,9,11,12,42,43,48,50,52,54,55,56,58,61,63,65,66,67,68,70,71,73,111,113,114,115,117,120,122,123,125,126,127,129,130,131,133,140,141,142,155,160,161,173,176,189,218,220,262,263,264,265,266,267,268,269,270,271,285,290,999],"ferblantier":[1,2,3,4,5,6,7,9,11,30,34,35,42,43,48,50,52,54,55,56,58,61,63,65,66,67,68,70,71,73,75,111,113,114,115,117,120,122,123,125,126,127,129,131,133,140,141,142,148,151,152,153,155,158,160,165,171,172,173,176,177,178,181,182,184,186,200,201,202,203,204,205,206,207,218,220,224,226,227,228,233,235,237,242,248,256,262,263,264,265,266,267,268,269,270,271,286,999],"frigoriste":[1,2,6,7,9,11,12,37,38,39,40,41,42,43,48,50,52,54,55,56,58,61,63,65,66,67,68,70,71,73,75,92,93,111,113,114,115,117,120,122,123,125,126,127,129,130,131,135,140,141,142,155,157,158,159,160,173,176,207,218,220,248,257,262,263,264,265,266,267,268,269,270,271,999],"tuyauteur":[1,3,6,7,9,11,12,13,15,17,42,43,48,50,52,54,55,56,57,58,61,63,65,66,67,68,70,71,73,75,81,92,93,95,97,100,101,106,107,111,113,114,115,117,120,122,123,125,126,127,129,130,131,133,140,141,142,148,149,155,158,159,160,173,176,192,207,218,220,248,262,263,264,265,266,267,268,269,270,271,287,999],"electricien":[1,3,6,7,9,11,12,37,38,39,40,42,43,48,50,52,54,55,58,61,63,65,66,67,68,70,71,73,111,113,114,115,117,120,122,123,125,126,127,129,130,131,140,141,142,173,176,180,181,207,218,220,248,257,262,263,264,265,266,267,268,269,270,271,289,999],"couvreur":[1,2,3,9,11,30,34,35,42,43,48,50,52,54,55,56,58,61,63,65,66,67,68,71,73,74,89,111,113,114,115,117,120,122,123,125,126,127,129,131,133,134,140,141,142,151,152,153,169,172,173,176,177,178,182,188,200,218,220,261,262,263,264,265,266,267,268,269,270,271,274,999],"charpentier":[1,2,3,6,7,9,11,30,35,42,43,48,50,51,52,54,55,56,58,61,63,65,66,67,68,70,71,73,74,76,81,87,111,113,114,115,117,120,122,123,125,126,127,129,131,133,134,140,141,142,148,150,151,152,153,162,167,168,169,171,173,176,177,178,179,190,193,199,200,207,218,220,222,223,224,225,226,227,228,229,230,231,232,235,236,261,262,263,264,265,266,267,268,269,270,271,281,999],"monteur":[1,3,6,7,9,11,15,17,20,25,30,31,32,35,37,38,39,40,42,43,48,50,52,54,55,58,61,63,65,66,67,68,70,71,73,75,81,87,111,113,114,115,117,120,122,123,125,126,127,129,131,135,140,141,142,145,150,151,152,165,166,170,173,174,176,180,183,190,191,199,201,202,203,204,205,206,207,218,220,224,226,227,235,240,242,247,258,259,261,262,263,264,265,266,267,268,269,270,271,273,288,999],"ferrailleur":[1,3,9,11,30,31,32,35,42,43,48,50,52,54,55,58,61,63,65,66,67,68,71,73,74,76,79,81,87,111,113,114,115,117,120,122,123,125,126,127,129,131,135,140,141,142,150,173,176,199,218,220,262,263,264,265,266,267,268,269,270,271,279,999],"grutier":[1,9,11,20,25,30,31,32,35,66,67,95,97,100,111,113,114,115,117,119,120,122,123,125,126,127,129,132,140,141,166,169,173,175,176,199,218,220,258,262,263,264,265,266,267,268,269,270,271,999],"briqueteur":[1,3,4,5,9,11,20,25,30,35,51,52,54,55,58,61,63,65,66,67,68,71,73,74,76,79,87,111,113,114,115,117,120,122,123,125,126,127,129,131,134,140,141,142,154,167,169,170,173,176,177,179,182,185,193,194,207,218,220,243,244,245,246,261,262,263,264,265,266,267,268,269,270,271,275,999],"cimentier":[1,3,9,11,12,15,17,20,25,27,30,31,32,35,51,52,54,55,58,61,63,65,66,67,68,71,73,74,76,79,81,111,113,114,115,117,120,122,123,125,126,127,129,130,131,132,134,136,138,140,141,142,144,145,148,154,164,167,169,170,173,176,185,190,193,194,218,220,245,252,255,261,262,263,264,265,266,267,268,269,270,271,273,280,999],"carreleur":[1,3,9,11,30,35,52,54,55,58,61,63,65,66,67,68,71,73,74,79,111,113,114,115,117,120,122,123,125,126,127,129,131,133,140,141,142,154,162,173,176,207,218,220,225,227,243,244,262,263,264,265,266,267,268,269,270,271,276,290,999],"peintre":[1,3,4,5,9,11,52,54,55,56,58,61,63,65,66,67,68,111,113,114,115,117,120,122,123,125,126,127,129,131,133,134,140,141,142,161,162,164,169,170,173,176,189,207,218,220,225,227,237,239,262,263,264,265,266,267,268,269,270,271,273,290,999],"platrier":[1,3,9,11,30,34,35,51,52,54,55,56,58,61,63,65,66,67,68,70,71,73,111,113,114,115,117,120,122,123,125,126,127,129,131,133,134,140,141,142,154,161,162,169,173,176,189,193,200,207,218,220,225,227,262,263,264,265,266,267,268,269,270,271,278,999],"systemes":[1,3,9,11,30,34,35,51,52,54,55,56,58,61,63,65,66,67,68,70,71,73,111,113,114,115,117,120,122,123,125,126,127,129,131,133,134,140,141,142,148,162,169,173,176,193,200,207,218,220,222,225,227,229,230,231,232,236,262,263,264,265,266,267,268,269,270,271,277,999],"revetements":[1,9,11,30,35,51,52,54,55,56,58,61,63,65,66,67,68,71,73,111,113,114,115,117,120,122,123,125,126,127,129,131,133,140,141,142,162,173,176,193,218,220,262,263,264,265,266,267,268,269,270,271,282,290,999],"chaudronnier":[1,3,9,11,12,15,17,30,31,32,34,35,41,42,43,48,50,52,54,55,58,61,63,65,66,67,68,70,71,73,75,87,92,111,113,114,115,117,120,122,123,125,126,127,129,130,131,135,140,141,142,148,150,151,159,170,173,176,183,191,201,202,203,204,205,206,207,218,220,224,226,227,228,233,235,242,247,256,262,263,264,265,266,267,268,269,270,271,273,999],"soudeur":[1,3,6,7,9,11,12,30,35,42,43,48,50,52,54,55,58,61,63,65,66,67,68,71,73,75,111,113,114,115,117,120,122,123,125,126,127,129,130,131,135,140,141,142,148,150,173,176,201,202,203,204,205,206,207,218,220,224,226,227,228,233,235,237,242,247,256,262,263,264,265,266,267,268,269,270,271,999],"mecanicien":[1,3,6,7,9,11,12,20,25,30,31,32,34,35,41,42,43,48,50,52,54,55,58,61,63,65,66,67,68,71,73,75,92,93,111,113,114,115,117,120,122,123,125,126,127,129,130,131,135,138,140,141,142,150,159,171,173,174,176,183,184,201,202,203,204,205,206,207,218,220,224,226,227,235,238,240,247,248,249,250,260,262,263,264,265,266,267,268,269,270,271,999],"protection_incendie":[1,2,3,6,7,9,11,12,30,34,35,41,42,43,48,50,52,54,55,58,61,63,65,66,67,68,70,71,73,75,92,111,113,114,115,117,120,122,123,125,126,127,129,130,131,135,140,141,142,155,158,159,160,173,176,218,220,262,263,264,265,266,267,268,269,270,271,999],"ascenseur":[1,9,11,12,37,38,39,40,41,52,54,55,58,61,63,65,66,67,68,70,71,73,75,92,111,113,114,115,117,119,120,122,123,125,126,127,129,130,131,140,141,142,157,173,176,218,220,257,259,262,263,264,265,266,267,268,269,270,271,272,999],"equipement_lourd":[1,11,13,15,17,18,19,20,23,25,27,52,54,55,56,57,58,61,63,65,66,67,92,95,97,100,101,106,107,111,113,114,115,117,119,120,122,123,125,126,127,129,132,134,136,137,139,140,141,142,143,144,145,146,147,149,163,164,166,167,168,169,173,175,176,187,190,192,194,199,218,220,262,263,264,265,266,267,268,269,270,271,999],"pelles":[1,11,13,15,17,20,25,27,30,35,51,52,54,55,56,57,58,61,63,65,66,67,92,95,97,100,101,106,107,111,113,114,115,117,120,122,123,125,126,127,129,132,136,137,139,140,141,142,143,144,145,146,147,149,163,167,168,169,173,175,176,187,190,192,193,194,199,218,220,262,263,264,265,266,267,268,269,270,271,999],"mec_machines":[12,18,19,20,23,25,30,34,35,41,42,43,48,50,52,54,55,58,61,63,65,66,67,68,71,73,74,75,92,111,113,114,115,117,119,120,122,123,125,130,131,132,134,138,140,141,142,169,173,174,176,201,202,203,204,205,206,207,218,220,224,226,227,235,238,240,247,248,249,250,260,262,263,264,265,266,267,268,269,270,271,999],"vitrier":[1,3,4,5,6,7,9,11,30,31,32,35,52,54,55,58,61,63,65,66,67,68,71,73,111,113,114,115,117,119,120,122,123,125,126,127,129,131,140,141,142,173,176,207,218,220,262,263,264,265,266,267,268,269,270,271,283,999],"serrurier":[1,9,11,30,35,37,38,39,40,42,43,48,50,52,54,55,58,61,63,65,66,67,68,70,71,73,75,111,113,114,115,117,119,120,122,123,125,126,127,129,131,140,141,142,148,165,171,173,176,184,186,201,202,203,204,205,206,207,218,220,224,227,228,233,235,241,242,247,248,256,262,263,264,265,266,267,268,269,270,271,999],"securite":[1,2,6,7,9,11,12,37,38,39,40,52,54,55,56,58,61,63,65,66,67,68,70,71,73,111,113,114,115,117,119,120,122,123,125,126,127,129,130,131,133,140,141,142,156,157,173,176,218,220,262,263,264,265,266,267,268,269,270,271,999],"elec_installateur":[1,2,3,6,7,9,11,12,37,38,39,40,41,42,43,48,50,52,54,55,58,61,63,65,66,67,68,70,71,73,81,111,113,114,115,117,119,120,122,123,125,126,127,129,130,131,133,140,141,142,148,156,157,158,166,173,174,176,180,181,218,220,262,263,264,265,266,267,268,269,270,271,289,999],"entrepreneur":[1,3,9,11,20,25,27,30,35,51,52,54,55,56,57,58,61,63,65,66,67,68,75,92,111,113,114,115,117,120,122,123,125,126,127,129,132,133,134,136,139,140,141,142,143,144,145,146,148,150,151,152,153,154,155,156,159,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,179,181,187,188,190,191,192,193,194,199,200,201,202,203,204,205,206,207,218,220,225,226,227,229,230,231,232,234,238,240,241,247,259,261,262,263,264,265,266,267,268,269,270,271,272,273,999],"manoeuvre":[1,11,13,15,17,20,25,51,52,54,55,58,61,63,65,66,67,68,71,73,74,79,106,111,113,114,115,117,120,122,123,125,126,141,142,143,176,193,218,220,251,252,261,262,263,264,265,266,267,268,269,270,271,284,999],"pompage_beton":[20,25,27,30,35,37,38,39,40,41,52,54,55,58,61,63,65,66,67,76,79,87,111,113,114,115,117,120,122,123,125,141,142,176,218,262,263,264,265,266,267,268,269,270,271,999],"arpenteur":[13,15,17,27,52,54,55,58,61,63,65,66,67,106,111,113,114,115,117,120,122,123,125,141,142,143,145,148,176,218,220,251,253,254,262,263,264,265,266,267,268,269,270,271,272,999],"boutefeu":[13,20,25,41,52,54,55,58,61,63,65,66,67,95,97,100,101,106,107,111,113,114,115,117,120,122,123,125,141,142,147,149,176,218,262,263,264,265,266,267,268,269,270,271,999],"monteur_ligne":[1,6,7,11,27,30,31,32,35,37,38,39,40,41,52,54,55,58,61,63,65,66,67,111,113,114,115,117,119,120,122,123,125,126,141,142,143,166,176,180,218,251,257,262,263,264,265,266,267,268,269,270,271,999],"scaphandrier":[12,15,17,30,35,41,52,54,55,58,61,63,65,66,67,111,113,114,115,117,119,120,122,123,125,130,141,142,176,191,218,252,253,254,262,263,264,265,266,267,268,269,270,271,999]},"situations":{"1":{"t":"Working at height","d":"Performing work at a level from which a person can fall, in particular more than 3 m, or at a lower height when the fall presents an increased danger: onto equipment, onto reinforc","f":"Safety","n":"CRITICAL","r":"LOW"},"2":{"t":"Roof work","d":"Moving about and working on a flat or sloped roof, near edges, openings, skylights and drains; surface that may be made slippery by new membrane, gravel, bitumen, dew or frost.","f":"Safety","n":"CRITICAL","r":"LOW"},"3":{"t":"Work on scaffolds","d":"Erecting, using, modifying and dismantling a fixed or rolling scaffold; moving about on a platform cluttered with materials; repeated access and climbing during the shift.","f":"Safety","n":"VERY HIGH","r":"LOW"},"4":{"t":"Use of a powered scaffold: mast climbing platform, FRACO","d":"Erecting, vertical travel and use of a mast climbing platform; progressive anchoring to the building as the mast rises; load distributed on the platform; lifting controls operated ","f":"Safety","n":"VERY HIGH","r":"LOW"},"5":{"t":"Use of a suspended scaffold or suspended platform","d":"Working from a platform suspended by cables from beams or roof anchors; vertical travel by winches; exposure to wind and swaying; complete dependence on the suspension system.","f":"Safety","n":"VERY HIGH","r":"LOW"},"6":{"t":"Use of a scissor lift","d":"Working from a vertically elevating platform; moving the equipment around the site; risk of tipover due to an unstable footing, a change in level or a side load.","f":"Safety","n":"VERY HIGH","r":"LOW"},"7":{"t":"Use of an articulating or telescopic boom lift","d":"Working from an articulating basket used to reach an offset point; high lateral forces; risk of ejection from a sudden movement or from striking the structure.","f":"Safety","n":"VERY HIGH","r":"LOW"},"9":{"t":"Use of a ladder or stepladder","d":"Access to an upper level or short-duration work at height; use of a ladder as a workstation; unstable positioning, unsecured support, standing on the top three rungs.","f":"Safety","n":"VERY HIGH","r":"LOW"},"11":{"t":"Work near an opening or drop","d":"Being present, moving about or working near a shaft, a duct chase, a pit, a slab edge or a floor opening, whether new or existing.","f":"Safety","n":"CRITICAL","r":"LOW"},"12":{"t":"Work in a confined space","d":"Entering a fully or partially enclosed space that, because of the confinement, presents a risk of asphyxiation, poisoning, fire or explosion, engulfment, or drowning and entrainmen","f":"Safety","n":"VERY HIGH","r":"MODERATE"},"13":{"t":"Excavation and trench work","d":"Digging, being present and working in an excavation or trench. One cubic metre of soil weighs more than a tonne; the collapse is sudden, and a person buried up to the chest can no ","f":"Safety","n":"CRITICAL","r":"MODERATE"},"15":{"t":"Work near or over water","d":"Working on a shoreline, a wharf, a bridge, a walkway, a barge or a floating platform, or near a basin, a pit or a flooded trench. Drowning happens quickly and silently, and cold wa","f":"Safety","n":"VERY HIGH","r":"MODERATE"},"17":{"t":"Work on ice","d":"Moving about, working or moving equipment on a frozen body of water. Ice thickness varies with current, depth and temperature, and a thin area cannot be seen from the surface.","f":"Safety","n":"VERY HIGH","r":"MODERATE"},"18":{"t":"Use of a forklift","d":"Operating a forklift in a warehouse, a yard or on a construction site; lifting and transporting palletized loads; visibility obstructed by the load; risk of lateral or longitudinal","f":"Safety","n":"CRITICAL","r":"MODERATE"},"19":{"t":"Use of a telehandler","d":"Operating a telescopic boom forklift; lifting to great heights and at an outreach; capacity drops sharply as the boom extends; may be used with a basket, forks or a hook.","f":"Safety","n":"CRITICAL","r":"MODERATE"},"20":{"t":"Use of heavy machinery","d":"Operating an excavator, a loader, a grader, a dump truck or a compactor; large blind spots, continuous whole-body vibration, repeated access to the cab, exposure to tipover.","f":"Safety","n":"CRITICAL","r":"MODERATE"},"23":{"t":"Use of a skid steer loader","d":"Operating a compact loader with skid steering; very limited rear visibility; entry and exit from the front, under the lift arms; frequent attachment changes.","f":"Safety","n":"VERY HIGH","r":"LOW"},"25":{"t":"Vehicle and machinery traffic: interaction with pedestrians","d":"Vehicles, machinery and workers on foot sharing the site. Crushing almost always occurs while reversing or swinging, at low speed, on a machine whose operator could not see the per","f":"Safety","n":"CRITICAL","r":"MODERATE"},"27":{"t":"Work near road traffic","d":"Working on or beside a public road; exposure to vehicles travelling at high speed, distracted drivers and low visibility conditions.","f":"Safety","n":"CRITICAL","r":"MODERATE"},"30":{"t":"Lifting loads","d":"Lifting, moving and positioning a load with a lifting device. Once the load is in the air, there is no corrective measure left: there is only the planned measure, or the accident.","f":"Safety","n":"CRITICAL","r":"LOW"},"31":{"t":"Use of a mobile crane or boom truck","d":"Setting up and operating a carrier-mounted crane; stability depends on the footing, the outriggers and compliance with the load chart; contact with an overhead power line is among ","f":"Safety","n":"CRITICAL","r":"MODERATE"},"32":{"t":"Use of a tower crane","d":"Erecting, operating, adding mast sections and dismantling a tower crane; the equipment is exposed at all times, including outside working hours; operator working alone in a cab, at","f":"Safety","n":"CRITICAL","r":"MODERATE"},"34":{"t":"Use of a hoist or winch","d":"Vertical lifting with a manual, electric or pneumatic hoist, or with a winch; suspension support often improvised; load handled in a confined area.","f":"Safety","n":"VERY HIGH","r":"LOW"},"35":{"t":"Rigging and slinging work","d":"Preparing, hooking up and guiding a load; selecting slings, shackles and lifting points; the tension in the sling legs increases sharply as the sling angle decreases.","f":"Safety","n":"CRITICAL","r":"LOW"},"37":{"t":"Electrical work","d":"Installing, connecting, modifying or maintaining an electrical circuit or electrical equipment; risk of electric shock, electrocution and arc burns.","f":"Physical","n":"CRITICAL","r":"LOW"},"38":{"t":"Work near overhead power lines","d":"Working, moving about or lifting near an energized overhead line; a contact also reaches people on the ground through step potential.","f":"Physical","n":"CRITICAL","r":"LOW"},"39":{"t":"Work on an exposed underground electrical network","d":"Work in an electrical vault, an access manhole or a trench where underground cables are exposed: connecting, repairing, replacing. Prior locating and excavation are covered by situ","f":"Physical","n":"VERY HIGH","r":"MODERATE"},"40":{"t":"Energized work and exposure to arc flash","d":"Working on energized equipment for troubleshooting or measurement; an arc releases a considerable amount of thermal energy in a few milliseconds and causes deep burns without direc","f":"Physical","n":"VERY HIGH","r":"LOW"},"41":{"t":"Lockout and control of hazardous energy","d":"Working on a machine, equipment or a system that could be restarted or repressurized; an unexpected startup during the work immediately maims or kills.","f":"Safety","n":"CRITICAL","r":"LOW"},"42":{"t":"Hot work","d":"Welding, cutting, grinding, brazing or using a flame; sparks travel far from the work point, pass through openings and can smoulder for several hours before igniting.","f":"Safety","n":"VERY HIGH","r":"LOW"},"43":{"t":"Welding work: exposure to fumes and radiation","d":"Arc welding; continuous exposure to metal fumes with every bead, and to radiation that also reaches nearby workers without their knowing it.","f":"Chemical","n":"VERY HIGH","r":"LOW"},"48":{"t":"Use or storage of propane and compressed gases","d":"Handling, transporting and storing gas cylinders; a cylinder whose valve breaks becomes a projectile, and a leak in an enclosed space creates an explosive atmosphere.","f":"Safety","n":"VERY HIGH","r":"LOW"},"50":{"t":"Work with a fire or explosion risk","d":"Simultaneous presence of an ignition source and flammable materials: solvent vapours, combustible dust, gases, residues in a container. Emptying a tank does not eliminate residual ","f":"Safety","n":"VERY HIGH","r":"LOW"},"51":{"t":"Demolition work","d":"Partial or complete demolition of a structure; unexpected collapse, falling materials, discovery of hazardous materials, instability of adjacent structures.","f":"Safety","n":"CRITICAL","r":"MODERATE"},"52":{"t":"Asbestos abatement or work in the presence of asbestos","d":"Disturbing a material that contains asbestos during maintenance, renovation or demolition work; the fibres released are carcinogenic and the disease appears decades later.","f":"Chemical","n":"VERY HIGH","r":"LOW"},"54":{"t":"Work generating silica dust","d":"Cutting, drilling, grinding, sanding or demolishing concrete, masonry, stone or ceramic; exposure is daily and lung damage is irreversible.","f":"Chemical","n":"CRITICAL","r":"MODERATE"},"55":{"t":"Work in the presence of lead","d":"Stripping, sanding, burning off or demolishing coatings applied before 1980; lead accumulates in the body and is carried home on clothing.","f":"Chemical","n":"HIGH","r":"MODERATE"},"56":{"t":"Work in the presence of mould or biological contamination","d":"Opening walls, attics or floors in a damp or unoccupied building; exposure to mould, rodent and bird droppings, and wastewater. Exposure occurs when the space is opened, not during","f":"Biological","n":"MODERATE","r":"LOW"},"57":{"t":"Work in the presence of contaminated soil or materials","d":"Excavating or handling soil contaminated with hydrocarbons, heavy metals or chemicals; exposure through inhalation, skin contact and ingestion.","f":"Chemical","n":"HIGH","r":"MODERATE"},"58":{"t":"Use of chemicals and hazardous materials","d":"Handling, applying and storing solvents, paints, adhesives, sealants, resins and cleaning products; exposure through inhalation and skin contact, made worse in an enclosed space.","f":"Chemical","n":"VERY HIGH","r":"LOW"},"61":{"t":"Use of sensitizing products: isocyanates and epoxies","d":"Applying foams, paints, varnishes or adhesives that contain isocyanates or epoxies. **Sensitization is permanent**: once established, even minimal exposure triggers the reaction an","f":"Chemical","n":"HIGH","r":"LOW"},"63":{"t":"Work generating dust other than silica","d":"Cutting, sanding, demolition or cleaning that produces wood, gypsum, insulation or composite material dust. These dusts are not silica and do not call for the same measures, but th","f":"Chemical","n":"HIGH","r":"MODERATE"},"65":{"t":"Work generating gases or vapours","d":"Emission of exhaust gases, combustion gases, process vapours or shielding gases; risk of poisoning and oxygen displacement, particularly in an enclosed space or a low-lying area.","f":"Chemical","n":"VERY HIGH","r":"LOW"},"66":{"t":"Work exposing workers to noise","d":"Exposure to noise from tools, equipment and the site; hearing damage is gradual, painless and irreversible, and exposure includes noise produced by others.","f":"Physical","n":"MODERATE","r":"LOW"},"67":{"t":"Work exposing workers to vibration","d":"Hand-arm vibration from portable tools, or whole-body vibration transmitted through the seat of mobile equipment; the damage develops without any acute episode and becomes permanen","f":"Physical","n":"HIGH","r":"LOW"},"68":{"t":"Use of portable electric or pneumatic tools","d":"Use of drills, screwdrivers, saws, sanders and percussion tools; entanglement, flying particles, electric shock, cuts and loss of control of the tool.","f":"Safety","n":"HIGH","r":"LOW"},"70":{"t":"Use of a powder-actuated tool","d":"Fastening with a powder-actuated tool; the nail passing through the material, ricochet, accidental firing, or a wall being pierced and a person on the other side being struck.","f":"Safety","n":"VERY HIGH","r":"LOW"},"71":{"t":"Use of a portable saw","d":"Use of a circular saw, mitre saw, reciprocating saw, chainsaw or concrete saw; contact with the blade, kickback, flying debris and loss of control.","f":"Safety","n":"VERY HIGH","r":"LOW"},"73":{"t":"Use of a grinder","d":"Grinding, cutoff work or deburring; disc bursting, flying hot particles, contact with the rotating disc and kickback.","f":"Safety","n":"VERY HIGH","r":"LOW"},"74":{"t":"Use of a jackhammer or concrete breaker","d":"Demolition by percussion; intense hand-arm vibration, high peak noise, flying chips and sustained static effort.","f":"Physical","n":"HIGH","r":"LOW"},"75":{"t":"Work on machines with moving parts","d":"Adjusting, testing, maintaining or troubleshooting a machine whose parts rotate, move or close; a pinch point leaves no chance of pulling away.","f":"Safety","n":"VERY HIGH","r":"LOW"},"76":{"t":"Formwork, stripping and shoring work","d":"Erecting, loading and dismantling formwork and shoring; the pressure of fresh concrete increases with the pour rate and height and can exceed the pressure the formwork is designed ","f":"Safety","n":"VERY HIGH","r":"LOW"},"79":{"t":"Concrete work and use of a concrete pump","d":"Pouring, placing and finishing concrete; trucks and pumps manoeuvring near workers, the boom whipping when a blockage occurs, prolonged contact with highly alkaline fresh concrete.","f":"Safety","n":"VERY HIGH","r":"LOW"},"81":{"t":"Work with reinforcing bars","d":"Placing protruding vertical reinforcing bars and being near them; a one-metre fall or a simple trip is enough to impale the body, and fall protection makes no difference.","f":"Safety","n":"VERY HIGH","r":"LOW"},"87":{"t":"Work on a temporarily unstable structure","d":"Framing erected but not braced, a newly built wall, a frame being assembled; the structure is held only by its temporary connections and its failure affects several workers at once","f":"Safety","n":"VERY HIGH","r":"LOW"},"89":{"t":"Hot bitumen roofing work","d":"Heating, transporting and applying bitumen at high temperature; bitumen sticks to the skin and continues to burn after contact, and the kettle is a constant ignition source.","f":"Safety","n":"HIGH","r":"LOW"},"92":{"t":"Work on pressurized systems","d":"Working on a pressurized hydraulic, pneumatic or process circuit; a jet can pierce the skin and inject fluid into the tissues without any visible wound.","f":"Safety","n":"HIGH","r":"LOW"},"93":{"t":"Refrigeration work and handling of refrigerants","d":"Working on a refrigeration circuit; refrigerant leaks causing frostbite on contact and oxygen displacement in an enclosed room, and toxic gases forming on contact with a flame.","f":"Chemical","n":"HIGH","r":"LOW"},"95":{"t":"Drilling work","d":"Drilling soil, rock or concrete with a fixed or mounted drill; rotating rods, flying debris and fluids, entanglement in moving parts.","f":"Safety","n":"HIGH","r":"MODERATE"},"97":{"t":"Deep foundation work: piles and sheet piles","d":"Driving, drilling or vibrating piles and sheet piles; handling long, heavy components; working under a mass suspended from the pile hammer or crane; vibration transmitted to the gr","f":"Safety","n":"VERY HIGH","r":"LOW"},"100":{"t":"Blasting work","d":"Transporting, storing, loading and firing explosives; risk of premature detonation, flyrock and misfire.","f":"Safety","n":"HIGH","r":"LOW"},"101":{"t":"Underground and tunnel work","d":"Working in a tunnel, gallery or underground structure; confinement, atmosphere to be monitored, mandatory mechanical ventilation, artificial lighting, long and difficult evacuation","f":"Safety","n":"VERY HIGH","r":"MODERATE"},"106":{"t":"Work near underground utilities","d":"Excavating or drilling near gas lines, electrical cables, water mains, sewer lines or telecommunication lines. A damaged natural gas line can cause a major leak and quickly create ","f":"Safety","n":"CRITICAL","r":"MODERATE"},"107":{"t":"Railway work or work near a railway track","d":"Working on or near a railway right of way; a train can neither stop nor swerve, and it approaches more quietly and faster than it seems.","f":"Safety","n":"VERY HIGH","r":"LOW"},"111":{"t":"Manual handling work","d":"Lifting, carrying, pushing and pulling materials; musculoskeletal disorders develop gradually, without any acute episode, and become permanent.","f":"Ergonomic","n":"HIGH","r":"LOW"},"113":{"t":"Repetitive work or work with postural constraints","d":"Repeated movements, sustained kneeling, squatting or bent postures, or arms above shoulder level; the damage results from frequency and duration, not from a single effort.","f":"Ergonomic","n":"HIGH","r":"LOW"},"114":{"t":"Work in hot conditions","d":"Exposure to ambient, radiant or process heat, made worse by wearing protective equipment; heatstroke is preceded by confusion, which the affected person does not recognize.","f":"Physical","n":"HIGH","r":"LOW"},"115":{"t":"Work in cold conditions","d":"Exposure to cold, wind and humidity; loss of dexterity, numbness, frostbite and hypothermia, made worse by wet clothing and inactivity.","f":"Physical","n":"HIGH","r":"LOW"},"117":{"t":"Work exposed to strong winds","d":"Exposure to wind at height, on a facade or during lifting operations; wind throws the worker off balance, acts like a sail on panels and loads, and blows unsecured materials away.","f":"Physical","n":"HIGH","r":"LOW"},"118":{"t":"Night work or work with reduced lighting","d":"Working during darkness, in an unlit room or in an enclosed space; poor visibility worsens all other risks, and alertness declines toward the end of a night shift.","f":"Safety","n":"HIGH","r":"LOW"},"119":{"t":"Working alone","d":"Performing a task out of sight and out of earshot of another person. Working alone creates no new risk: it lengthens the time before help arrives for all the other risks, and turns","f":"Safety","n":"VERY HIGH","r":"LOW"},"120":{"t":"Work in the presence of the public or in an occupied building","d":"Performing work near people who are not trained, equipped or informed of the risks: occupants, customers, passersby, children.","f":"Safety","n":"HIGH","r":"LOW"},"122":{"t":"Work involving several trades: coactivity","d":"Several employers present at the same time on the same site; no employer can see, from within its own perimeter, the risks the others create for it.","f":"Safety","n":"CRITICAL","r":"MODERATE"},"123":{"t":"Overlapping work at different levels","d":"Work performed simultaneously at different levels in the same vertical line; a falling tool or material reaches a deadly speed without the person below being able to anticipate it.","f":"Safety","n":"VERY HIGH","r":"MODERATE"},"125":{"t":"Storing and stacking materials","d":"Receiving, stacking and storing materials on the site or at height; a pile tipping over, a stack collapsing, a floor being overloaded.","f":"Safety","n":"HIGH","r":"MODERATE"},"126":{"t":"Installing or removing guardrails and collective protection","d":"Installing, modifying or dismantling a guardrail, a cover or a net: operations carried out precisely when the protection is not yet in place or has just been removed.","f":"Safety","n":"VERY HIGH","r":"LOW"},"127":{"t":"Installing or using lifelines and anchor systems","d":"Installing, using and checking horizontal or vertical lifelines and permanent or temporary anchor points; complete dependence of the worker on the device.","f":"Safety","n":"VERY HIGH","r":"LOW"},"129":{"t":"Fall rescue: suspension after a fall","d":"Recovering a worker suspended in a harness after a fall has been arrested; suspension trauma can be fatal in less than 15 minutes, while the person is conscious but immobilized.","f":"Safety","n":"HIGH","r":"LOW"},"130":{"t":"Confined space rescue","d":"Recovering a person in difficulty inside a confined space. Most confined space deaths are those of improvised rescuers who came to help and died in turn, often in less than two min","f":"Safety","n":"HIGH","r":"LOW"},"131":{"t":"Use of a retractable blade knife","d":"Cutting cardboard, membrane, insulation, gypsum, resilient flooring or strapping with a utility knife; repeated movement, often pulling the blade toward oneself, with the free hand","f":"Safety","n":"HIGH","r":"LOW"},"132":{"t":"Reversing a vehicle or machinery","d":"A truck, a machine or a heavy vehicle reversing in an area where workers may be moving about. The rear blind spot is total, the alarm blends in with the ambient noise, and the mano","f":"Safety","n":"CRITICAL","r":"LOW"},"133":{"t":"Work in the presence of contaminants: general requirements","d":"Renovation, demolition or maintenance work in a building likely to contain several contaminants at once: asbestos, lead, beryllium, mould, contaminated soil. Contaminants are often","f":"Chemical","n":"VERY HIGH","r":"MODERATE"},"134":{"t":"Use of a portable generator or space heater","d":"Temporary power supply or site heating with a combustion appliance. Carbon monoxide is odourless, colourless and nonirritating: the exposed person feels tired and has a headache, a","f":"Chemical","n":"CRITICAL","r":"LOW"},"135":{"t":"Presence or use of carbon dioxide","d":"Use or presence of CO₂: welding shielding gas, extinguishing systems, dry ice, processes. CO₂ is heavier than air and accumulates at ground level, in pits and in excavations, where","f":"Chemical","n":"VERY HIGH","r":"LOW"},"136":{"t":"Paving and asphalt work","d":"Spreading, levelling and compacting hot mix asphalt at high temperature; the paver, the roller compactor, trucks and workers on foot sharing a narrow space; exposure to hot bitumen","f":"Safety","n":"VERY HIGH","r":"LOW"},"137":{"t":"Crushing work","d":"Operating a mobile or fixed crusher; flying particles, intense noise, silica dust, falling materials, and entanglement in the gears when clearing a jam: the most improvised task in","f":"Safety","n":"VERY HIGH","r":"MODERATE"},"138":{"t":"Chipping hardened concrete out of a mixer drum","d":"A worker entering the drum of a mixer truck to remove hardened concrete. This is a **confined space**: a single, narrow access, a dusty atmosphere, internal blades, and a drum that","f":"Safety","n":"VERY HIGH","r":"LOW"},"139":{"t":"Use of a light motorized vehicle or equipment","d":"Driving an all-terrain vehicle, a cart or light motorized equipment on the site or on a roof; tipover, ejection, contact with people, and exposure to exhaust gases in an enclosed s","f":"Safety","n":"HIGH","r":"MODERATE"},"140":{"t":"Refuelling","d":"Filling the tank of a tool, piece of equipment or vehicle on the site. Gasoline vapours are heavier than air and accumulate at ground level, and a hot surface is enough to ignite t","f":"Chemical","n":"VERY HIGH","r":"LOW"},"141":{"t":"Supply, wearing and inspection of personal protective equipment","d":"Failure of protective equipment at the moment it was supposed to protect: equipment not suited to the task, in poor condition, poorly fitted, improperly stored, or past its inspect","f":"Safety","n":"HIGH","r":"LOW"},"142":{"t":"Wearing a respirator","d":"Failure of respiratory protection at the moment it was supposed to protect: device not suited to the contaminant, unsuitable or saturated filter or cartridge, seal compromised by f","f":"Chemical","n":"VERY HIGH","r":"LOW"},"143":{"t":"Land clearing and tree felling","d":"Felling, limbing and skidding; the falling path of a tree is never entirely predictable: an unbalanced crown, a hung-up branch or a split trunk makes the tree pivot away from the l","f":"Safety","n":"VERY HIGH","r":"LOW"},"144":{"t":"Landscaping work","d":"Grading, fence installation with an auger, laying sod and paving stones, installing furniture and play equipment. Repetitive handling work at ground level, in the presence of mobil","f":"Ergonomic","n":"HIGH","r":"LOW"},"145":{"t":"Surveying and field measurement work","d":"Driving between sites, setting out markers and taking surveys near excavations and moving machinery. Surveyors are not part of the production crew: they move through active zones w","f":"Safety","n":"HIGH","r":"MODERATE"},"146":{"t":"Work on a landfill site","d":"Excavation, grading or installation on an active or closed landfill site. The main risk is accidentally puncturing a pocket of biogas: methane and hydrogen sulphide that build up u","f":"Chemical","n":"VERY HIGH","r":"MODERATE"},"147":{"t":"Operating a quarry or sand pit","d":"Operating an extraction site: fixed crushing and screening equipment, mobile equipment, truck traffic, working faces and stockpiles.","f":"Safety","n":"VERY HIGH","r":"LOW"},"148":{"t":"Using an alignment or levelling laser","d":"Using a laser emitter for pipe alignment, levelling or layout. The beam reaches the retina painlessly and without a protective reflex: the eye injury has occurred before the person","f":"Physical","n":"HIGH","r":"LOW"},"149":{"t":"Well drilling: geothermal, water, test boring","d":"Deep drilling with a carrier-mounted drill rig; handling and driving rods, repeated lifting of loads above workers, rotating parts, mud and debris on the ground. The cycle repeats ","f":"Safety","n":"VERY HIGH","r":"LOW"},"150":{"t":"Dismantling a steel structure","d":"Cutting and removing steel structure members. Each member removed changes the load path in what remains standing, and the cut piece becomes a suspended load at the very moment it s","f":"Safety","n":"VERY HIGH","r":"LOW"},"151":{"t":"Installing joists and steel decking","d":"Installing open web joists and steel deck sheets on a structural frame. The worker moves on a surface still being installed that is not yet securely fastened to the structure: each","f":"Safety","n":"CRITICAL","r":"LOW"},"152":{"t":"Erecting roof trusses and long-span joists","d":"Lifting, setting and bracing roof trusses, rafters and joists. A roof truss has a high load-bearing capacity in its own plane, but very little lateral stability before its bracing ","f":"Safety","n":"VERY HIGH","r":"LOW"},"153":{"t":"Roof snow removal","d":"Removing snow and ice accumulated on a roof. Snow erases every landmark: the roof edge, skylights, openings and protections disappear under a uniform surface, and workers no longer","f":"Safety","n":"CRITICAL","r":"MODERATE"},"154":{"t":"Masonry work","d":"Carrying and laying blocks, bricks and stone, preparing mortar, cutting units and cleaning walls with acid. The motion is repeated hundreds of times a day, at varying heights, with","f":"Ergonomic","n":"VERY HIGH","r":"MODERATE"},"155":{"t":"Maintenance and decontamination of ventilation systems","d":"Cleaning, balancing, hygiene treatment and decontamination of ducts, plenums and air handling units. Over the years, the system has accumulated what the building breathed (dust, sp","f":"Biological","n":"HIGH","r":"LOW"},"156":{"t":"Aluminothermic or exothermic welding: Cadweld joint","d":"Making connections by exothermic reaction in a mould: grounding, conductor connections. The reaction produces molten metal at a very high temperature, without flame or warning. A t","f":"Safety","n":"HIGH","r":"LOW"},"157":{"t":"Pulling wire and cable","d":"Pulling conductors through conduits or cable trays, by hand or with a mechanized system. The pulling rope stores considerable energy under tension: if it breaks, the end whips and ","f":"Safety","n":"HIGH","r":"LOW"},"158":{"t":"Bending conduit and pipe","d":"Bending metal conduit with a manual or hydraulic bender, and PVC conduit by heating. The pipe moves along its entire length during bending, and the crushing zone of the bender leav","f":"Safety","n":"MODERATE","r":"LOW"},"159":{"t":"Pressure testing of piping","d":"Pressurizing a piping system to check its tightness: plumbing, process, sprinklers, compressed air. The test deliberately takes the piping beyond its operating pressure, and a plug","f":"Safety","n":"VERY HIGH","r":"MODERATE"},"160":{"t":"Insulation and heat and frost insulation work","d":"Removing old insulation and installing insulation on piping, ducts and equipment. Old insulation is presumed to contain asbestos until proven otherwise, and new insulation is often","f":"Chemical","n":"HIGH","r":"MODERATE"},"161":{"t":"Fireproofing work","d":"Spray application of fireproofing products to the structural frame and other building elements. The product is mixed at the site, sprayed as a dense suspension, and the operator wo","f":"Chemical","n":"HIGH","r":"LOW"},"162":{"t":"Interior finishing work: floor and wall coverings","d":"Installing tile, resilient flooring, wood flooring, epoxy coating, plaster and acrylic finish. The work is done kneeling or bent over for hours, with adhesives that give off vapour","f":"Ergonomic","n":"HIGH","r":"LOW"},"163":{"t":"Snow removal from roads and parking lots","d":"Clearing snow from streets, parking lots and public spaces with a snowblower, a sidewalk plow or a truck. Pedestrians appear without warning in the snow and noise, the operator wor","f":"Safety","n":"CRITICAL","r":"LOW"},"164":{"t":"Road and parking lot marking","d":"Preparing and applying marking paints and coatings, placing visual markers. Line painting is done in open traffic, at low speed, over kilometres, and the worker placing the markers","f":"Safety","n":"CRITICAL","r":"LOW"},"165":{"t":"Architectural ironwork","d":"Fabricating and installing architectural metalwork: frames, doors, handrails, guardrails, grilles, hardware. Cutting, grinding and welding steel, often in stairwells and shafts whe","f":"Safety","n":"HIGH","r":"MODERATE"},"166":{"t":"Work on transmission and distribution lines and substations","d":"Construction and maintenance of overhead lines, towers and distribution substations. A de-energized line can remain energized by induction from a neighbouring line that is still li","f":"Safety","n":"VERY HIGH","r":"LOW"},"167":{"t":"Diamond sawing and drilling of concrete","d":"Core drilling, sawing slabs, walls and floors, and demolition with a jackhammer. The cut piece becomes a free load at the last saw cut: a piece of slab breaks away without warning ","f":"Safety","n":"VERY HIGH","r":"LOW"},"168":{"t":"Site mobilization and demobilization","d":"Installing and removing the trailer park, storage and unloading areas, toilets and temporary connections. This is the phase when the site does not yet have its rules: signage is no","f":"Safety","n":"HIGH","r":"LOW"},"169":{"t":"Exposure to carbon monoxide","d":"Presence of carbon monoxide produced by combustion engines or heating appliances in an enclosed or partially enclosed space. No cartridge or filter for a half-mask protects against","f":"Chemical","n":"CRITICAL","r":"LOW"},"170":{"t":"Stripping or cleaning with a high-pressure water jet or abrasive blasting","d":"Stripping and cleaning surfaces with a high-pressure water jet or an abrasive jet. The jet cuts the skin and penetrates the tissues without the lance touching the body: the injury ","f":"Safety","n":"VERY HIGH","r":"LOW"},"171":{"t":"Industrial doors, garage doors and loading docks","d":"Installing, repairing and adjusting sectional doors, garage doors, dock levellers and dock seals. A torsion or extension spring stores considerable energy and releases it all at on","f":"Safety","n":"VERY HIGH","r":"LOW"},"172":{"t":"Building maintenance work","d":"Housekeeping, manual snow removal, chimney sweeping and minor maintenance work. The work is done in an occupied building, often alone, with cleaning products, slippery surfaces and","f":"Ergonomic","n":"MODERATE","r":"LOW"},"173":{"t":"Delivery, receiving and mechanized handling of materials","d":"Receiving deliveries, unloading and moving materials with a pallet jack, hand truck or cart. The pallet jack is taken lightly because it has no motor, but a loaded pallet weighs mo","f":"Safety","n":"MODERATE","r":"MODERATE"},"174":{"t":"Work in a wind turbine","d":"Climbing the tower, work in the nacelle, access to the hub, mechanical and electrical maintenance. The nacelle is at once an extreme height location, a confined space and an energi","f":"Safety","n":"VERY HIGH","r":"LOW"},"175":{"t":"Road transport and escort of oversize vehicles","d":"Driving heavy vehicles, transporting materials and escorting oversize loads. Truck drivers go from the cab to the site several times a day: they step down into an environment where","f":"Safety","n":"HIGH","r":"LOW"},"176":{"t":"Exercising and managing the right to refuse","d":"Situation where a worker exercises the right to refuse to perform work they believe is dangerous. A poorly managed right to refuse produces the very accident it warned of, because ","f":"Safety","n":"HIGH","r":"LOW"},"177":{"t":"Using a bracket scaffold","d":"Platform carried by brackets fastened to the existing structure. The bracket transfers the entire load to one point of the wall or frame: unlike a scaffold resting on the ground, n","f":"Safety","n":"HIGH","r":"LOW"},"178":{"t":"Using a pump jack scaffold","d":"Poles braced against the building, with a platform raised by jacks. The poles and ladders are handled vertically and reach a height the worker does not anticipate from the ground.","f":"Safety","n":"HIGH","r":"LOW"},"179":{"t":"Using a hydraulic scaffold","d":"Powered towers supporting a platform that rises hydraulically. A leak in the hydraulic circuit makes the platform descend without warning.","f":"Safety","n":"HIGH","r":"LOW"},"180":{"t":"Installing an electrical substation","d":"Installation or connection work in a distribution substation. Beyond low voltage, distance alone no longer protects: an arc can strike without contact.","f":"Physical","n":"VERY HIGH","r":"LOW"},"181":{"t":"Using a bucket truck","d":"Truck-mounted aerial device with a basket. The vehicle occupies the road and creates a risk of collision while the worker is at height.","f":"Safety","n":"HIGH","r":"LOW"},"182":{"t":"Using a powered ladder hoist","d":"Material hoist on a ladder rail, used in roofing and siding work. The ladder rests on both side rails: if only one side rail bears, the ladder pivots under load.","f":"Safety","n":"HIGH","r":"LOW"},"183":{"t":"Using a compressed air winch","d":"Pneumatic winch used for dismantling and lifting parts. A compressed air hose that comes loose under pressure whips along its entire length.","f":"Safety","n":"HIGH","r":"LOW"},"184":{"t":"Work on a dock leveller","d":"Repairing or adjusting a dock leveller or a dock seal. The raised deck falls back if nothing holds it: the hydraulic cylinder is not a support.","f":"Safety","n":"HIGH","r":"LOW"},"185":{"t":"Using a mortar mixer","d":"Preparing mortar with a powered mixer. The paddle turns in an open drum, and clearing a jam always seems quick.","f":"Safety","n":"HIGH","r":"LOW"},"186":{"t":"Using a manual sheet metal brake","d":"Forming flashings, drip edges and sheet metal parts. The edge of a sheet cuts deeply and effortlessly.","f":"Safety","n":"MODERATE","r":"LOW"},"187":{"t":"Operating a crushing plant","d":"Fixed or portable installation for crushing and processing aggregates. The equipment runs continuously, and getting used to the noise and movement lowers vigilance.","f":"Safety","n":"VERY HIGH","r":"LOW"},"188":{"t":"Using a roof stripper and scarifier","d":"Powered equipment for removing roofing. The roof was not designed to carry powered equipment.","f":"Safety","n":"HIGH","r":"LOW"},"189":{"t":"Using a fireproofing product mixer","d":"Mixing the fireproofing product at the site before spraying. The device is installed at ground level and runs continuously during application.","f":"Safety","n":"HIGH","r":"LOW"},"190":{"t":"Soldier pile wall and excavation shoring","d":"Design, installation, monitoring and dismantling of a retaining structure that holds back soil during an excavation. Each lift excavated before it is lagged is a bare wall, and tha","f":"Safety","n":"VERY HIGH","r":"MODERATE"},"191":{"t":"Diving work at a construction site","d":"Underwater work: inspection, repair, cutting, welding, handling under water. Differential pressure is the hazard specific to this environment: an unisolated water intake, pump or d","f":"Safety","n":"VERY HIGH","r":"LOW"},"192":{"t":"Using a vacuum truck","d":"Pumping, suctioning and transferring liquids, sludge and residues. A hose under vacuum must never be unclogged by hand: the suction pulls in a limb faster than it can be withdrawn,","f":"Chemical","n":"VERY HIGH","r":"LOW"},"193":{"t":"Using robotic demolition equipment","d":"Demolition with a remote-controlled machine. The operator is outside the danger zone but focused on the machine, and the arm reaches farther than the operator judges from where the","f":"Safety","n":"HIGH","r":"LOW"},"194":{"t":"Using a vibratory plate or compactor","d":"Compacting soil, aggregates or asphalt with a vibratory plate, a walk-behind roller or a rammer. The vibration transmitted to the hands and arms is continuous for the entire durati","f":"Physical","n":"HIGH","r":"LOW"},"195":{"t":"Drinking water supply","d":"Supply, distribution, storage and consumption of drinking water. Dehydration comes before heatstroke and first shows up as reduced alertness, not as thirst: workers do not realize ","f":"Biological","n":"MODERATE","r":"LOW"},"196":{"t":"Sanitary facilities","d":"Toilets, sinks, hand washing stations and showers. Inadequate or unsanitary facilities lead workers to do without them, and hand hygiene is the first barrier against ingesting cont","f":"Biological","n":"MODERATE","r":"LOW"},"197":{"t":"Temporary stairway","d":"Installing, using and dismantling a temporary stairway. It is the most used access route at the site: every worker uses it several times a day, often with their hands full.","f":"Safety","n":"HIGH","r":"LOW"},"198":{"t":"Prolonged driving and fatigue at the wheel","d":"Travel by vehicle to and from the site, and driving during the shift. Fatigue at the wheel sets in on the way home, after the shift, when alertness has already been used up by the ","f":"Psychosocial","n":"VERY HIGH","r":"LOW"},"199":{"t":"Cargo securement","d":"Loading, positioning, restraining and unloading cargo on a vehicle, trailer or flatbed. A load that shifts during transport gives no warning: it is released when the side gates are","f":"Safety","n":"HIGH","r":"LOW"},"200":{"t":"Using a pneumatic nailer","d":"Fastening with a compressed air nailer. The nail goes through the workpiece and keeps going: it hits whatever is behind it, which the operator cannot see.","f":"Safety","n":"VERY HIGH","r":"LOW"},"201":{"t":"Using a bench grinder","d":"Sharpening, deburring and grinding on a fixed bench or pedestal grinder. A wheel that bursts throws its fragments at rotational speed: it is the only risk of this machine that kill","f":"Safety","n":"HIGH","r":"LOW"},"202":{"t":"Using a hydraulic press brake","d":"Bending metal sheets and plates. The punch and die zone closes with a force that does not stop: holding a workpiece by hand near the bending point is the manoeuvre to eliminate fir","f":"Safety","n":"VERY HIGH","r":"LOW"},"203":{"t":"Using a band saw","d":"Cutting with a continuous blade running over wheels, in a vertical or horizontal position. The blade does not stop when the workpiece shifts: the pushing hand follows its path all ","f":"Safety","n":"HIGH","r":"LOW"},"204":{"t":"Using a drill press","d":"Drilling, reaming and tapping on a fixed drill. It is most often not the bit that injures, it is the workpiece: when not clamped, it starts to spin and becomes a blade sweeping the","f":"Safety","n":"HIGH","r":"LOW"},"205":{"t":"Using a shear","d":"Cutting metal sheets and sections with a sheet metal shear, a guillotine shear or a lever shear. The blade comes down along its entire length in a single motion: there is no slowin","f":"Safety","n":"VERY HIGH","r":"LOW"},"206":{"t":"Using a conventional milling machine","d":"Machining metal parts on a vertical or horizontal milling machine. The cutter cuts with several teeth at a time and keeps turning after the cut: the chip it produces is hot, sharp ","f":"Safety","n":"HIGH","r":"LOW"},"207":{"t":"Using fixed shop equipment","d":"Daily use of fixed machines: guards, lockout, training, workstation. A shop machine is used every day by the same people: the motion becomes automatic, and the guard that gets in t","f":"Safety","n":"VERY HIGH","r":"LOW"},"208":{"t":"Using a tire changer","d":"Removing and mounting tires on rims. A sudden bead blowout throws the rim and tire with a force that can go through a partition: the risk comes not from the tool but from the energ","f":"Safety","n":"CRITICAL","r":"LOW"},"209":{"t":"Inflating tires in a restraining cage","d":"Inflating, mounting and removing tires in a cage. The cage does not prevent the blowout: it holds back the pieces. It does not replace any other measure.","f":"Safety","n":"VERY HIGH","r":"LOW"},"210":{"t":"Using a wheel balancer","d":"Balancing wheels on a horizontal or vertical shaft machine. The protective hood, which comes down and stops the rotation, is the main safety device.","f":"Safety","n":"MODERATE","r":"LOW"},"211":{"t":"Using a jointer","d":"Surfacing a face and squaring an edge with manual feed. The workpiece is pushed by hand over knives turning at thousands of revolutions per minute: there is no mechanism between th","f":"Safety","n":"CRITICAL","r":"LOW"},"212":{"t":"Using a thickness planer","d":"Planing to thickness with power feed. Kickback is thrown at the speed of the rollers: whatever is in line with the workpiece gets hit.","f":"Safety","n":"VERY HIGH","r":"LOW"},"213":{"t":"Using a belt or disc sander","d":"Sanding on a fixed belt, disc or combination machine. The belt runs downward and backward: a workpiece presented on the wrong side is torn from the hands and thrown.","f":"Safety","n":"HIGH","r":"LOW"},"214":{"t":"Using a diamond saw for stone","d":"Cutting stone, concrete or ceramic on a table saw with a diamond blade and water feed. The water feed is not a comfort accessory: it is the measure that keeps silica from reaching ","f":"Chemical","n":"CRITICAL","r":"MODERATE"},"215":{"t":"Using a bridge saw for stone","d":"Cutting, sawing and profiling stone on a bridge machine. The workpiece weighs several hundred kilos and the bridge moves above it.","f":"Safety","n":"VERY HIGH","r":"LOW"},"216":{"t":"Abrasive blasting in a booth","d":"Stripping with abrasive projected under pressure, in a booth or a dedicated area. **The abrasive used** determines everything: silica sand is ruled out because its dust is carcinog","f":"Chemical","n":"CRITICAL","r":"MODERATE"},"217":{"t":"Handling with vacuum lifters","d":"Handling glazing, panels and slabs with a manual vacuum cup or a vacuum lifting beam. The vacuum lifter holds by negative pressure, and the vacuum can be lost without anything show","f":"Safety","n":"VERY HIGH","r":"LOW"},"218":{"t":"Computer workstation work","d":"Prolonged administrative work at a computer workstation. A poorly adjusted workstation injures no one today; it produces tendinitis two years from now: that is why adjustment does ","f":"Ergonomic","n":"HIGH","r":"LOW"},"219":{"t":"Same-level fall","d":"Slipping, tripping and missteps on a walking surface. The most frequent accident and the least taken seriously: it does not come from an identifiable hazard but from a set of small","f":"Safety","n":"HIGH","r":"LOW"},"220":{"t":"Road travel for work","d":"Work involving travel: sales, service, delivery, installation, inspection. The worker on the road is alone, in an environment the worker does not control: the measures that provide","f":"Safety","n":"CRITICAL","r":"LOW"},"221":{"t":"Telework","d":"Work performed from home or any other agreed location. The employer remains responsible for the health and safety of the teleworker, but no longer sees the workstation: the measure","f":"Ergonomic","n":"HIGH","r":"LOW"},"222":{"t":"Using a spindle moulder","d":"Profiling wood with a tool rotating at high speed. The spindle moulder turns at thousands of revolutions per minute and nothing holds the workpiece except the hands or the jig: it ","f":"Safety","n":"CRITICAL","r":"LOW"},"223":{"t":"Using a tenoner","d":"Machining tenons and profiles on a single or double tenoner or a combination machine. Several tools rotate at the same time, on different axes: an operator watching one can bring a","f":"Safety","n":"CRITICAL","r":"LOW"},"224":{"t":"Using a numerically controlled machine","d":"Machining on a CNC machining centre, lathe, milling machine or router. The machine executes what is programmed, not what the operator had in mind: an error in the program, the orig","f":"Safety","n":"VERY HIGH","r":"LOW"},"225":{"t":"Using a dust collector","d":"Capturing and collecting dust: cyclone, baghouse filter, portable unit. The dust collector concentrates in one place what was scattered everywhere: combustible dust in a confined c","f":"Chemical","n":"VERY HIGH","r":"LOW"},"226":{"t":"Using a conveyor","d":"Moving materials by belt, roller, chain or screw conveyor. The conveyor draws in without apparent force: it is the pinch point, not the speed, that injures.","f":"Safety","n":"CRITICAL","r":"LOW"},"227":{"t":"Using a lift table","d":"Lifting and positioning loads on a fixed or mobile lift table, whether manual, hydraulic, pneumatic or mechanical. The hydraulic cylinder is not a support: a leak or a fitting that","f":"Safety","n":"VERY HIGH","r":"LOW"},"228":{"t":"Using an automatic stop","d":"Automated positioning of the workpiece on a saw, drill, punch press or machining line. The stop moves on its own, without warning and without anyone touching a control: a homing se","f":"Safety","n":"HIGH","r":"LOW"},"229":{"t":"Using a biscuit joiner","d":"Cutting slots in wood for joining biscuits with a biscuit joiner (also called a plate joiner). The blade comes out at the moment of plunging, on a path the hand cannot see: the gua","f":"Safety","n":"VERY HIGH","r":"LOW"},"230":{"t":"Using an edgebander","d":"Applying edging to the edge of a panel on a manual, semiautomatic or automatic machine. It is the only shop machine that combines hot glue, powered feed and machining on the same l","f":"Safety","n":"VERY HIGH","r":"LOW"},"231":{"t":"Using a mortiser","d":"Cutting mortises with a hollow chisel mortiser or a chain mortiser. The chain mortiser cuts in both directions and does not stop by itself: the chain keeps turning by inertia for s","f":"Safety","n":"VERY HIGH","r":"LOW"},"232":{"t":"Using a dowelling machine","d":"Drilling joining holes with a dowelling machine, dowel borer or dowel drill. Several spindles descend at the same time, on parallel axes: a hand that repositions a workpiece under ","f":"Safety","n":"VERY HIGH","r":"LOW"},"233":{"t":"Using a laser cutting table","d":"CO₂ or fibre laser cutting, with or without a closed enclosure. The laser beam is invisible and easily catches people off guard: a simple reflection on a metal object can reach the","f":"Physical","n":"VERY HIGH","r":"LOW"},"234":{"t":"Using and maintaining pallet racking","d":"Pallet racking: frames, beams, bracing. The collapse of pallet racking is never sudden: it is preceded by deformation. A bent upright can seem stable before giving way abruptly.","f":"Safety","n":"VERY HIGH","r":"LOW"},"235":{"t":"Using a shop press","d":"Manual, hydraulic or pneumatic press: pressing in, pressing out, straightening. A part that gives way flies off at the speed of a bullet: the energy stored under twenty tonnes is r","f":"Safety","n":"VERY HIGH","r":"LOW"},"236":{"t":"Using a radial arm saw","d":"Crosscutting, mitre cuts and bevel cuts with a radial arm saw. The blade comes toward the operator: the cutting motion brings the tool back toward the body, and a blade that bites ","f":"Safety","n":"CRITICAL","r":"LOW"},"237":{"t":"Work in a paint room or spray booth","d":"Spraying, drying and cleaning in a booth. Paint mist is a flammable mixture in suspension: ventilation prevents the concentration from reaching the lower explosive limit.","f":"Chemical","n":"VERY HIGH","r":"LOW"},"238":{"t":"Charging batteries of mobile equipment","d":"Charging station for lift trucks, pallet trucks and platforms. A lead-acid battery being charged releases hydrogen: at 4% in air, it explodes.","f":"Chemical","n":"VERY HIGH","r":"MODERATE"},"239":{"t":"Work in a mixing and instrument cleaning room","d":"Mixing solutions and cleaning instruments at a dedicated station. The danger comes from the mixture, not from the products taken one by one: bleach and an acid produce chlorine.","f":"Chemical","n":"HIGH","r":"LOW"},"240":{"t":"Operating a vertical mast lift truck","d":"Stacker, order picker, reach truck. Stability depends on height: a lift truck that is stable at ground level tips over at four metres with the same load.","f":"Safety","n":"CRITICAL","r":"MODERATE"},"241":{"t":"Using a baler","d":"Compacting cardboard, plastic and recyclable materials in a vertical or horizontal baler. The compaction chamber looks like a bin: the natural gesture of pressing the contents down","f":"Safety","n":"CRITICAL","r":"LOW"},"242":{"t":"Using a guillotine or guillotine shear","d":"Cutting sheet metal with a guillotine shear. The blade comes down across the entire width at the same time: there is no safe zone along the cutting line.","f":"Safety","n":"CRITICAL","r":"LOW"},"243":{"t":"Cutting stone with a bridge saw or block saw","d":"Sawing natural stone, quartz and engineered materials. Silica is not a nuisance: it is a carcinogen. A dry cut of engineered quartz produces, within a few minutes, a concentration ","f":"Chemical","n":"CRITICAL","r":"MODERATE"},"244":{"t":"Polishing stone","d":"Edge polishing, on a flat bed or with a sander-polisher. Polishing produces finer dust than sawing: respirable particles penetrate deeper into the lungs, and it is this fraction th","f":"Chemical","n":"CRITICAL","r":"LOW"},"245":{"t":"Diamond wire sawing","d":"Cutting through concrete, reinforced concrete, stone or metal with a diamond wire saw. The wire is under extreme tension of several tonnes: if it breaks, it throws the diamond bead","f":"Safety","n":"CRITICAL","r":"LOW"},"246":{"t":"Machining stone with a CNC router","d":"Milling, drilling, profiling and sink cutouts on a CNC machining centre. A numerically controlled machine gives no warning: it executes the program, and does not stop because a han","f":"Safety","n":"VERY HIGH","r":"LOW"},"247":{"t":"Using an overhead crane","d":"Lifting and moving loads with an overhead crane, gantry crane or jib crane. Watch for the pendulum effect: the suspended load continues its movement after the control is released. ","f":"Safety","n":"CRITICAL","r":"LOW"},"248":{"t":"Using a crimper","d":"Crimping fittings, lugs and ferrules with a pneumatic, electric or hydraulic crimper. The stroke is completed in a few tenths of a second: a finger that follows the part to the las","f":"Safety","n":"HIGH","r":"LOW"},"249":{"t":"Work in a service pit","d":"Inspection, maintenance, repair and fluid draining of vehicles from a pit. A pit is a space where vapours heavier than air accumulate: gasoline, solvents and carbon monoxide sink, ","f":"Chemical","n":"CRITICAL","r":"LOW"},"250":{"t":"Using a vehicle lift","d":"Maintaining vehicles on a post lift, scissor lift or four-post lift. The vehicle almost never falls on the way up: it falls while someone is working underneath, when the centre of ","f":"Safety","n":"CRITICAL","r":"LOW"},"251":{"t":"Working in trees and pruning","d":"Pruning, cabling and sectional felling, in the tree or from a ladder or a bucket. For the tree trimmer, the tree serves as both the work area and the safety support: the structure ","f":"Safety","n":"CRITICAL","r":"LOW"},"252":{"t":"Installing and operating a cofferdam","d":"Planning, installing, monitoring and dismantling a cofferdam. A cofferdam holds only thanks to its pump: a single overnight breakdown is enough to flood the excavation before the c","f":"Safety","n":"CRITICAL","r":"MODERATE"},"253":{"t":"Work from a barge or floating pontoon","d":"Access, movement, mooring, loading and work on a floating surface. On a pontoon, instability changes everything: the slightest movement makes the vessel list. Stability is never a ","f":"Safety","n":"VERY HIGH","r":"LOW"},"254":{"t":"Shoreline work from a boat or inflatable boat","d":"Work performed from a rowboat, a boat or an inflatable boat. A small boat manoeuvres well and capsizes quickly: its light weight makes it sensitive to wind, current and the movemen","f":"Safety","n":"VERY HIGH","r":"LOW"},"255":{"t":"Robotic hydrodemolition and hydrocutting","d":"Ultra-high-pressure water jet robot used to demolish or cut concrete. The jet cuts concrete; it cuts flesh effortlessly: the wound, tiny on the surface, is deep and infected.","f":"Safety","n":"CRITICAL","r":"LOW"},"256":{"t":"Automated plasma cutting","d":"CNC plasma cutting table. The arc exceeds 20,000 °C and its radiation burns the cornea within a few seconds, without immediate pain.","f":"Chemical","n":"VERY HIGH","r":"LOW"},"257":{"t":"Using a multimeter","d":"Measuring voltage, current, resistance and continuity. The multimeter is the tool that confirms the absence of voltage, and the one that kills when it is poorly chosen: an instrume","f":"Safety","n":"VERY HIGH","r":"LOW"},"258":{"t":"Lifting with high-capacity hydraulic jacks","d":"Lifting, skidding, cribbing and levelling heavy loads with jacks and synchronized systems. A jack lifts; it does not hold: what holds the load is the cribbing.","f":"Safety","n":"CRITICAL","r":"LOW"},"259":{"t":"Using a construction elevator","d":"Vertical transport of workers and materials along a structure. A construction elevator is a personnel hoist: it does not replace a material hoist and is not replaced by one.","f":"Safety","n":"VERY HIGH","r":"LOW"},"260":{"t":"Using a tire handling machine","d":"Loading, unloading and stacking tires with a tire manipulator or a clamp lift truck. A heavy equipment tire weighs more than a person and rolls on its own: it takes off on the slig","f":"Safety","n":"VERY HIGH","r":"MODERATE"},"261":{"t":"Acting as principal contractor","d":"The employer assumes responsibility for carrying out all the work on the construction site. Its obligations are not those of one more employer: they cover what no employer can prov","f":"Safety","n":"CRITICAL","r":"LOW"},"262":{"t":"Workload","d":"Amount of work, pace, deadlines and intensity required. Overload produces physical accidents: a worker rushing to finish does not take the time to install the guardrail. The shortc","f":"Psychosocial","n":"MODERATE","r":"LOW"},"263":{"t":"Low decision latitude","d":"The worker's latitude over how to perform the work, its pace and the use of skills. It is not the difficulty of the work that wears people out, it is difficulty without any control","f":"Psychosocial","n":"MODERATE","r":"LOW"},"264":{"t":"Low recognition at work","d":"Esteem, respect and reward received for the work done. Acknowledging a hazard report is the most cost-effective measure of all: a worker thanked for reporting will report again.","f":"Psychosocial","n":"MODERATE","r":"LOW"},"265":{"t":"Low support from the supervisor or coworkers","d":"Help, listening and backing received from the immediate supervisor and coworkers. Support is what cushions all the other factors, and a worker who does not dare to ask takes the ri","f":"Psychosocial","n":"MODERATE","r":"LOW"},"266":{"t":"Organizational injustice","d":"Fairness of policies, decisions and procedures, and of the way they are applied. Perceived injustice directly undermines safety: an instruction that applies only to new workers, or","f":"Psychosocial","n":"MODERATE","r":"LOW"},"267":{"t":"Psychological or sexual harassment","d":"Repeated vexatious behaviour (or a single serious instance of behaviour with a lasting harmful effect) that affects dignity or integrity and results in a harmful work environment. ","f":"Psychosocial","n":"MODERATE","r":"LOW"},"268":{"t":"Workplace violence","d":"Physical, psychological, verbal or property violence committed by a client, a user, a visitor or a coworker. An outside aggressor is not subject to the employer's authority: what p","f":"Psychosocial","n":"MODERATE","r":"LOW"},"269":{"t":"Domestic or family violence occurring at work","d":"Violence experienced outside work that shows up at the workplace: calls, presence of the aggressor, threats, monitoring of the schedule. It enters the workplace because the schedul","f":"Psychosocial","n":"LOW","r":"LOW"},"270":{"t":"Sexual violence in the workplace","d":"Any form of violence targeting sexuality, including unwanted gestures of a sexual nature. Tolerated remarks are the breeding ground for gestures: a workplace where the jokes are le","f":"Psychosocial","n":"MODERATE","r":"LOW"},"271":{"t":"Exposure to a potentially traumatic event","d":"Direct or indirect exposure to an event likely to cause an intense stress reaction: serious accident, death, assault, rescue, discovery. Being a witness is enough.","f":"Psychosocial","n":"MODERATE","r":"LOW"},"272":{"t":"Site supervision","d":"Moving around a construction site to observe the progress, compliance and quality of the work: site inspector, project manager, owner's representative. The site inspector does not ","f":"Safety","n":"VERY HIGH","r":"LOW"},"273":{"t":"Work from a truck-mounted bridge inspection unit (under-bridge platform)","d":"Inspection, maintenance and repair of bridges and overpasses from a platform mounted on a truck and positioned beside or under the deck. **The equipment works upside down**: the pl","f":"Safety","n":"CRITICAL","r":"LOW"},"274":{"t":"Physical demands specific to the trade: roofer","d":"Loads, postures and repetitive movements specific to the roofer trade: raising shingle bundles; installing shingles or membrane; tearing off the old roofing.","f":"Ergonomic","n":"HIGH","r":"LOW"},"275":{"t":"Physical demands specific to the trade: bricklayer-mason","d":"Loads, postures and repetitive movements specific to the bricklayer-mason trade: laying concrete blocks; raising materials onto the scaffold; preparing mortar.","f":"Ergonomic","n":"HIGH","r":"LOW"},"276":{"t":"Physical demands specific to the trade: tile setter","d":"Loads, postures and repetitive movements specific to the tile setter trade: laying floor tile; mixing adhesive and mortar; handling large formats.","f":"Ergonomic","n":"HIGH","r":"LOW"},"277":{"t":"Physical demands specific to the trade: interior systems installer","d":"Loads, postures and repetitive movements specific to the interior systems installer trade: installing drywall on ceilings; bringing panels up; screwing panels.","f":"Ergonomic","n":"HIGH","r":"LOW"},"278":{"t":"Physical demands specific to the trade: plasterer","d":"Loads, postures and repetitive movements specific to the plasterer trade: taping ceiling joints; sanding; mixing and carrying compound.","f":"Ergonomic","n":"HIGH","r":"LOW"},"279":{"t":"Physical demands specific to the trade: reinforcing steel erector","d":"Loads, postures and repetitive movements specific to the reinforcing steel erector trade: tying slab reinforcement; carrying bars; placing chairs and spacers.","f":"Ergonomic","n":"HIGH","r":"LOW"},"280":{"t":"Physical demands specific to the trade: cement finisher","d":"Loads, postures and repetitive movements specific to the cement finisher trade: finishing the slab by hand; spreading and levelling concrete; handling the pump hose.","f":"Ergonomic","n":"HIGH","r":"LOW"},"281":{"t":"Physical demands specific to the trade: carpenter-joiner","d":"Loads, postures and repetitive movements specific to the carpenter-joiner trade: installing decking and floors; erecting formwork; handling trusses and joists.","f":"Ergonomic","n":"HIGH","r":"LOW"},"282":{"t":"Physical demands specific to the trade: resilient flooring installer","d":"Loads, postures and repetitive movements specific to the resilient flooring installer trade: stretching carpet; spreading adhesive; moving rolls.","f":"Ergonomic","n":"HIGH","r":"LOW"},"283":{"t":"Physical demands specific to the trade: glazier","d":"Loads, postures and repetitive movements specific to the glazier trade: installing glazing on a facade; carrying glazing units; applying glazing compounds and sealants.","f":"Ergonomic","n":"HIGH","r":"LOW"},"284":{"t":"Physical demands specific to the trade: specialized labourer","d":"Loads, postures and repetitive movements specific to the specialized labourer trade: carrying materials and debris; shovelling; demolition with a jackhammer.","f":"Ergonomic","n":"HIGH","r":"LOW"},"285":{"t":"Physical demands specific to the trade: heat and frost insulator","d":"Loads, postures and repetitive movements specific to the heat and frost insulator trade: insulating overhead piping; cutting insulation; moving bales.","f":"Ergonomic","n":"HIGH","r":"LOW"},"286":{"t":"Physical demands specific to the trade: sheet metal worker","d":"Loads, postures and repetitive movements specific to the sheet metal worker trade: installing overhead ducts; drilling and fastening supports; cutting and bending sheet metal.","f":"Ergonomic","n":"HIGH","r":"LOW"},"287":{"t":"Physical demands specific to the trade: pipefitter","d":"Loads, postures and repetitive movements specific to the pipefitter trade: positioning lengths overhead; threading and tightening; laying pipe in a trench.","f":"Ergonomic","n":"HIGH","r":"LOW"},"288":{"t":"Physical demands specific to the trade: ironworker","d":"Loads, postures and repetitive movements specific to the ironworker trade: bolting connections; aligning members; carrying secondary members.","f":"Ergonomic","n":"HIGH","r":"LOW"},"289":{"t":"Physical demands specific to the trade: electrician","d":"Loads, postures and repetitive movements specific to the electrician trade: pulling wire and cable; drilling and fastening overhead; bending conduit.","f":"Ergonomic","n":"HIGH","r":"LOW"},"290":{"t":"Applying vapour-emitting products in an enclosed or poorly ventilated space","d":"Laying or applying adhesives, glues, solvents, primers, sealers or resins in a closed room (bathroom, mechanical room, basement, closet); the vapours, often heavier than air, build","f":"Chemical","n":"VERY HIGH","r":"LOW"},"999":{"t":"Work-related psychosocial risks","d":"Imposed workload and pace, little latitude to stop or report, strained relationships, isolation, exposure to a traumatic event, violence or harassment. These factors reduce alertne","f":"Psychosocial","n":"MODERATE","r":"LOW"}},"themes":{"Work at height":[1,2,3,4,5,6,7,9,11,126,127,129,151,152,153,177,178,179,181,188,259,273],"Confined spaces and excavation":[12,13,95,97,100,101,106,107,130,138,149,190],"Machinery and traffic":[18,19,20,23,25,27,132,136,137,139,147,163,164,168,173,175,187,194,199,240],"Lifting and rigging":[30,31,32,34,35,182,247,258],"Electricity and energy sources":[37,38,39,40,41,156,157,166,180,257],"Hot work and fire":[42,43,48,50,134,135,169,256],"Contaminants and products":[52,54,55,56,57,58,61,63,65,133,142,146,155,160,161,170,189,192,290],"Noise, conditions and environment":[15,17,66,67,114,115,117,118,148,233,252,253,254],"Tools and machines":[68,70,71,73,74,75,131,158,167,186,200,201,202,203,204,205,206,245],"Shop equipment":[207,208,209,210,211,212,213,214,215,216,217,222,223,224,225,226,227,228,229,230,231,232,235,236,237,238,239,241,242,243,244,246,248,249,250,260],"Structure and building work":[51,76,79,81,87,89,92,150,154,159,162,165,171,183,184,185,193,255],"Office work and travel":[218,219,220,221],"Facilities and organization":[93,111,113,119,120,122,123,125,140,141,143,144,145,172,174,176,191,195,196,197,198,234,251,261,262,263,264,265,266,267,268,269,270,271,272,999],"Trade-specific ergonomics":[274,275,276,277,278,279,280,281,282,283,284,285,286,287,288,289]},"contexte":{"13":"chantier","15":"chantier","17":"chantier","27":"chantier","51":"chantier","57":"chantier","76":"chantier","79":"chantier","81":"chantier","87":"chantier","89":"chantier","95":"chantier","97":"chantier","100":"chantier","101":"chantier","106":"chantier","107":"chantier","133":"chantier","136":"chantier","143":"chantier","144":"chantier","145":"chantier","146":"chantier","147":"chantier","149":"chantier","150":"chantier","151":"chantier","152":"chantier","153":"chantier","154":"chantier","156":"chantier","160":"chantier","161":"chantier","162":"chantier","163":"chantier","164":"chantier","165":"chantier","166":"chantier","167":"chantier","168":"chantier","170":"chantier","174":"chantier","175":"chantier","183":"chantier","185":"chantier","189":"chantier","190":"chantier","191":"chantier","192":"chantier","193":"chantier","245":"chantier","251":"chantier","252":"chantier","253":"chantier","254":"chantier","255":"chantier","274":"chantier","275":"chantier","276":"chantier","277":"chantier","278":"chantier","279":"chantier","280":"chantier","281":"chantier","282":"chantier","283":"chantier","284":"chantier","285":"chantier","286":"chantier","287":"chantier","288":"chantier","289":"chantier","207":"etablissement","208":"etablissement","209":"etablissement","210":"etablissement","211":"etablissement","212":"etablissement","213":"etablissement","214":"etablissement","215":"etablissement","216":"etablissement","217":"etablissement","222":"etablissement","223":"etablissement","224":"etablissement","225":"etablissement","226":"etablissement","227":"etablissement","228":"etablissement","229":"etablissement","230":"etablissement","231":"etablissement","232":"etablissement","235":"etablissement","236":"etablissement","237":"etablissement","238":"etablissement","239":"etablissement","241":"etablissement","242":"etablissement","243":"etablissement","244":"etablissement","246":"etablissement","248":"etablissement","249":"etablissement","250":"etablissement","260":"etablissement","1":"les deux","2":"les deux","3":"les deux","4":"les deux","5":"les deux","6":"les deux","7":"les deux","9":"les deux","11":"les deux","12":"les deux","18":"les deux","19":"les deux","20":"les deux","23":"les deux","25":"les deux","30":"les deux","31":"les deux","32":"les deux","34":"les deux","35":"les deux","37":"les deux","38":"les deux","39":"les deux","40":"les deux","41":"les deux","42":"les deux","43":"les deux","48":"les deux","50":"les deux","52":"les deux","54":"les deux","55":"les deux","56":"les deux","58":"les deux","61":"les deux","63":"les deux","65":"les deux","66":"les deux","67":"les deux","68":"les deux","70":"les deux","71":"les deux","73":"les deux","74":"les deux","75":"les deux","92":"les deux","93":"les deux","111":"les deux","113":"les deux","114":"les deux","115":"les deux","117":"les deux","118":"les deux","119":"les deux","120":"les deux","122":"les deux","123":"les deux","125":"les deux","126":"les deux","127":"les deux","129":"les deux","130":"les deux","131":"les deux","132":"les deux","134":"les deux","135":"les deux","137":"les deux","138":"les deux","139":"les deux","140":"les deux","141":"les deux","142":"les deux","148":"les deux","155":"les deux","157":"les deux","158":"les deux","159":"les deux","169":"les deux","171":"les deux","172":"les deux","173":"les deux","176":"les deux","177":"les deux","178":"les deux","179":"les deux","180":"les deux","181":"les deux","182":"les deux","184":"les deux","186":"les deux","187":"les deux","188":"les deux","194":"les deux","195":"les deux","196":"les deux","197":"les deux","198":"les deux","199":"les deux","200":"les deux","201":"les deux","202":"les deux","203":"les deux","204":"les deux","205":"les deux","206":"les deux","218":"les deux","219":"les deux","220":"les deux","221":"les deux","233":"les deux","234":"les deux","240":"les deux","247":"les deux","256":"les deux","257":"les deux","258":"les deux","259":"les deux","261":"les deux","262":"les deux","263":"les deux","264":"les deux","265":"les deux","266":"les deux","267":"les deux","268":"les deux","269":"les deux","270":"les deux","271":"les deux","272":"les deux","273":"les deux","999":"les deux","290":"les deux"},"metiers":{"calorifugeur":{"nom":"Heat and frost insulator","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,9,12,52,58,63,66,68,111,113,122,123,125,142,160,285]},"ferblantier":{"nom":"Sheet metal worker","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,2,9,11,42,43,66,68,73,111,113,114,115,117,122,123,125,126,186,286]},"frigoriste":{"nom":"Refrigeration mechanic","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,7,9,42,48,58,66,68,92,93,111,113,122,125,142,158]},"tuyauteur":{"nom":"Pipefitter","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,9,11,12,42,43,48,66,68,92,111,113,122,123,125,142,158,159,287]},"electricien":{"nom":"Electrician","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,6,7,9,11,37,40,66,68,111,113,122,123,125,289]},"couvreur":{"nom":"Roofer","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,2,9,11,66,68,89,111,113,114,115,117,122,123,125,126,127,129,274]},"charpentier":{"nom":"Carpenter-joiner","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,2,3,9,11,66,68,70,71,73,76,81,87,111,113,114,115,117,122,123,125,126,152,281]},"monteur":{"nom":"Ironworker","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,11,30,35,66,68,87,111,113,114,115,117,122,123,125,126,127,129,150,151,288]},"ferrailleur":{"nom":"Reinforcing steel erector","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,11,30,35,66,68,76,81,87,111,113,114,115,117,122,123,125,126,279]},"grutier":{"nom":"Crane operator","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[30,31,32,35,66,111,113,114,115,117,122,125,132]},"briqueteur":{"nom":"Bricklayer-mason","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,3,9,11,19,30,54,66,68,71,73,111,113,114,115,117,122,123,125,142,154,167,275]},"cimentier":{"nom":"Cement finisher","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[54,66,68,71,76,79,81,111,113,114,115,117,122,125,167,194,280]},"carreleur":{"nom":"Tile setter","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[9,54,58,61,63,66,68,71,111,113,122,125,142,162,276,290]},"peintre":{"nom":"Painter","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,6,9,58,61,63,65,68,111,113,122,125,142,290]},"platrier":{"nom":"Plasterer","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,3,9,63,66,68,71,111,113,122,125,142,162,278]},"systemes":{"nom":"Interior systems installer","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,3,9,11,63,66,68,71,111,113,122,123,125,142,162,277]},"revetements":{"nom":"Resilient flooring installer","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[58,61,63,68,71,111,113,122,125,142,162,282,290]},"chaudronnier":{"nom":"Boilermaker","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,9,11,42,43,48,66,68,73,87,92,111,113,114,115,117,122,123,125,127,129,150]},"soudeur":{"nom":"Welder","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[42,43,48,50,65,66,68,111,113,122,123,125,142]},"mecanicien":{"nom":"Millwright","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,9,30,41,42,43,66,68,73,75,92,111,113,122,123,125]},"protection_incendie":{"nom":"Sprinkler fitter","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,6,7,9,11,42,43,66,68,92,111,113,122,123,125,159]},"ascenseur":{"nom":"Elevator mechanic","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,9,11,12,37,41,66,68,111,113,122,123,125,127,129]},"equipement_lourd":{"nom":"Heavy equipment operator","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[13,20,25,66,106,111,113,114,115,117,122,125,132,140,168,173,194]},"pelles":{"nom":"Power shovel operator","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[13,20,25,66,106,111,113,114,115,117,122,125,132,140,168,194]},"mec_machines":{"nom":"Heavy equipment mechanic","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[20,41,42,58,66,68,75,92,111,113,122,125,140]},"vitrier":{"nom":"Glazier","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,6,7,9,11,30,35,68,111,113,122,123,125,126,283]},"serrurier":{"nom":"Architectural ironworker","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,9,11,30,42,43,66,68,73,111,113,122,123,125,165,171]},"securite":{"nom":"Security systems installer","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[7,9,37,68,111,113,122,125,157]},"elec_installateur":{"nom":"Installation electrician","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,6,7,9,11,37,38,40,41,66,68,111,113,114,115,117,122,123,125,157,158,289]},"entrepreneur":{"nom":"General contractor","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,20,25,27,30,66,68,111,113,114,115,117,122,123,125,132,168,173]},"manoeuvre":{"nom":"Specialized labourer","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,13,66,68,71,74,79,106,111,113,114,115,117,122,123,125,137,187,194,284]},"pompage_beton":{"nom":"Concrete pump operator","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[30,38,66,76,79,111,113,114,115,117,122,123,125,139,182,194]},"arpenteur":{"nom":"Surveyor","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[27,106,111,113,114,115,117,122,125,143,145,148]},"boutefeu":{"nom":"Blaster-driller","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[66,95,97,100,106,111,113,114,115,117,122,125,147,149,187]},"monteur_ligne":{"nom":"Lineworker","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,6,9,30,31,37,38,39,40,111,113,114,115,117,122,125,143,180]},"scaphandrier":{"nom":"Commercial diver","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[30,58,63,111,113,122,125,191]}},"etab":{"etab_calorifugeur":{"nom":"Establishment: Heat and frost insulator","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,9,18,25,58,63,66,68,71,111,113,122,123,125,132,142,173,195,196,199,207,219,220,285]},"etab_ferblantier":{"nom":"Establishment: Sheet metal worker","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,9,18,25,42,43,66,68,73,111,113,122,123,125,132,173,186,195,196,199,201,202,203,204,205,207,219,220,286]},"etab_frigoriste":{"nom":"Establishment: Refrigeration mechanic","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,7,9,18,25,42,48,58,66,68,92,93,111,113,122,125,132,142,158,173,195,196,199,204,207,219,220]},"etab_tuyauteur":{"nom":"Establishment: Pipefitter","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,9,18,25,42,43,48,66,68,92,111,113,122,123,125,132,142,158,159,173,195,196,199,203,204,207,219,220,287]},"etab_electricien":{"nom":"Establishment: Electrician","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,6,7,9,18,25,37,41,66,68,111,113,122,123,125,132,157,158,173,195,196,199,204,207,219,220,289]},"etab_couvreur":{"nom":"Establishment: Roofer","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,9,18,25,42,63,66,68,71,111,113,122,123,125,132,173,186,195,196,199,207,219,220,274]},"etab_charpentier":{"nom":"Establishment: Carpenter-joiner","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,9,18,25,63,66,68,70,71,73,111,113,122,123,125,132,173,195,196,199,200,203,204,207,211,212,213,219,220,281]},"etab_monteur":{"nom":"Establishment: Ironworker","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,18,25,30,35,42,43,66,68,73,111,113,122,123,125,132,173,195,196,199,201,202,203,204,205,207,219,220,288]},"etab_ferrailleur":{"nom":"Establishment: Reinforcing steel erector","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,18,25,30,35,42,43,66,68,73,111,113,122,123,125,132,173,195,196,199,201,205,207,219,220,279]},"etab_grutier":{"nom":"Establishment: Crane operator","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[18,25,30,35,41,66,68,111,113,122,125,132,173,195,196,199,207,219,220]},"etab_briqueteur":{"nom":"Establishment: Bricklayer-mason","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,9,18,19,25,30,54,66,68,71,73,111,113,122,123,125,132,142,173,195,196,199,201,207,214,219,220,275]},"etab_cimentier":{"nom":"Establishment: Cement finisher","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[18,25,54,63,66,68,71,111,113,122,125,132,173,195,196,199,207,214,219,220,280]},"etab_carreleur":{"nom":"Establishment: Tile setter","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[9,18,25,54,58,61,63,66,68,71,111,113,122,125,132,142,173,195,196,199,207,214,219,220,276,290]},"etab_peintre":{"nom":"Establishment: Painter","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,6,9,18,25,58,61,63,65,68,111,113,122,125,132,142,173,195,196,199,207,213,216,219,220,290]},"etab_platrier":{"nom":"Establishment: Plasterer","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,9,18,25,63,66,68,71,111,113,122,125,132,142,173,195,196,199,207,213,219,220,278]},"etab_systemes":{"nom":"Establishment: Interior systems installer","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,9,18,25,63,66,68,71,111,113,122,123,125,132,142,173,195,196,199,203,204,207,219,220,277]},"etab_revetements":{"nom":"Establishment: Resilient flooring installer","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[18,25,58,61,63,68,71,111,113,122,125,132,142,173,195,196,199,207,219,220,282,290]},"etab_chaudronnier":{"nom":"Establishment: Boilermaker","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,9,18,25,42,43,48,66,68,73,92,111,113,122,123,125,132,173,195,196,199,201,202,203,204,205,206,207,219,220]},"etab_soudeur":{"nom":"Establishment: Welder","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[18,25,42,43,48,50,65,66,68,111,113,122,123,125,132,142,173,195,196,199,201,203,205,206,207,219,220]},"etab_mecanicien":{"nom":"Establishment: Millwright","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,9,18,25,30,41,42,43,66,68,73,75,92,111,113,122,123,125,132,173,195,196,199,201,204,207,208,209,210,219,220]},"etab_protection_incendie":{"nom":"Establishment: Sprinkler fitter","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,6,7,9,18,25,42,43,66,68,92,111,113,122,123,125,132,159,173,195,196,199,204,207,219,220]},"etab_ascenseur":{"nom":"Establishment: Elevator mechanic","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,9,18,25,30,37,41,66,68,111,113,122,123,125,132,173,195,196,199,201,204,207,219,220]},"etab_equipement_lourd":{"nom":"Establishment: Heavy equipment operator","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[18,25,41,66,68,111,113,122,125,132,140,173,194,195,196,199,201,204,207,208,209,210,219,220]},"etab_pelles":{"nom":"Establishment: Power shovel operator","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[18,25,41,66,68,111,113,122,125,132,140,173,194,195,196,199,201,204,207,219,220]},"etab_mec_machines":{"nom":"Establishment: Heavy equipment mechanic","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[18,25,41,42,58,66,68,75,92,111,113,122,125,132,140,173,195,196,199,201,204,207,208,209,210,219,220]},"etab_vitrier":{"nom":"Establishment: Glazier","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,6,7,9,18,25,30,35,66,68,111,113,122,123,125,132,173,195,196,199,207,217,219,220,283]},"etab_serrurier":{"nom":"Establishment: Architectural ironworker","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,9,18,25,30,42,43,66,68,73,111,113,122,123,125,132,173,195,196,199,201,202,203,204,205,207,219,220]},"etab_securite":{"nom":"Establishment: Security systems installer","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[7,9,18,25,37,68,111,113,122,125,132,157,173,195,196,199,204,207,219,220]},"etab_elec_installateur":{"nom":"Establishment: Installation electrician","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,6,7,9,18,25,37,41,66,68,111,113,122,123,125,132,157,158,173,195,196,199,204,207,219,220,289]},"etab_entrepreneur":{"nom":"Establishment: General contractor","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,18,25,30,42,66,68,71,111,113,122,123,125,132,173,195,196,199,201,204,207,219,220]},"etab_manoeuvre":{"nom":"Establishment: Specialized labourer","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,18,25,66,68,71,74,111,113,122,123,125,132,173,195,196,199,207,219,220,284]},"etab_pompage_beton":{"nom":"Establishment: Concrete pump operator","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[18,25,30,66,68,111,113,122,123,125,132,139,173,195,196,199,207,219,220]},"etab_arpenteur":{"nom":"Establishment: Surveyor","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[18,25,68,111,113,122,125,132,173,195,196,199,207,219,220]},"etab_boutefeu":{"nom":"Establishment: Blaster-driller","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[18,25,66,68,111,113,122,125,132,173,195,196,199,207,219,220]},"etab_monteur_ligne":{"nom":"Establishment: Lineworker","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[1,6,9,18,25,30,37,68,111,113,122,125,132,173,195,196,199,207,219,220]},"etab_scaphandrier":{"nom":"Establishment: Commercial diver","obl":[141,176,999,262,263,264,265,266,267,268,269,270,271],"pre":[18,25,30,58,63,68,111,113,122,125,132,173,195,196,199,207,219,220]}}};
+
+const $ = s => document.querySelector(s);
+let coches = new Set(), obligatoires = new Set();
+let sauvetageRetire = false;
+
+// **Le sauvetage suit le travail en hauteur.** Coché d'office dès qu'un
+// travail en hauteur est retenu; l'employeur le décoche s'il ne s'applique
+// pas, et il ne revient plus tant que ce choix tient.
+function hauteurRetenue() {
+  const S = D.sauvetage;
+  return !!(S && S.hauteur.some(n => coches.has(n)));
+}
+function sauvetageAuto() {
+  const S = D.sauvetage;
+  if (!S) return;
+  if (hauteurRetenue() && !sauvetageRetire) coches.add(S.cible);
+}
+
+// **Les réponses de la fiche qui ajoutent une situation.** « Coactivité
+// prévue » ajoute la 122; « postes à l'ordinateur » ajoute la 218.
+function liensFiche() {
+  for (const f of ficheCourante()) {
+    if (!f.situation) continue;
+    const c = document.querySelector(`input[name="fc_${f.code}"]:checked`);
+    if (!c) continue;
+    if (c.value === 'oui') coches.add(f.situation);
+    else if (!obligatoires.has(f.situation)) coches.delete(f.situation);
+  }
+}
+
+function metiersDuContexte() {
+  return $('#ctx').value === 'etablissement' ? D.etab : D.metiers;
+}
+
+// **Le maître d'œuvre est sur un chantier.** Il voit les situations et les
+// métiers du chantier; seul son tronc diffère.
+function ctxEff() {
+  return $('#ctx').value === 'maitre_oeuvre' ? 'chantier' : $('#ctx').value;
+}
+
+// **L'établissement a sa propre fiche d'identification.**
+function ficheCourante() {
+  return $('#ctx').value === 'etablissement'
+    ? (D.fiche_etablissement || []) : (D.fiche_chantier || []);
+}
+
+function remplirMetiers() {
+  const m = metiersDuContexte();
+  const cles = Object.keys(m).sort((a, b) => m[a].nom.localeCompare(m[b].nom, 'en'));
+  $('#met').innerHTML = '<option value="">Choose</option>' +
+    cles.map(c => `<option value="${c}">${m[c].nom}</option>`).join('');
+}
+
+function applique() {
+  const c = $('#met').value, m = metiersDuContexte();
+  coches = new Set(); obligatoires = new Set();
+  if (c && m[c]) {
+    m[c].obl.forEach(n => { obligatoires.add(n); coches.add(n); });
+    m[c].pre.forEach(n => coches.add(n));
+  }
+  // le maître d'œuvre porte toujours l'exercice de sa fonction
+  if ($('#ctx').value === 'maitre_oeuvre') { obligatoires.add(261); coches.add(261); }
+  sauvetageRetire = false;
+  liensFiche();
+  sauvetageAuto();
+  dessine();
+}
+
+function visible(n) {
+  const ctx = ctxEff(), c = D.contexte[n];
+  if (c !== 'les deux' && c !== ctx) return false;
+
+  // **Le filtrage par métier.** Un peintre n'a pas à lire la ligne du
+  // déneigement de toiture pour décider de ne pas la cocher. La liste vient
+  // des sections rattachées au métier — la même qui décide quelles fiches
+  // le programme portera.
+  //
+  // Une situation déjà cochée reste visible même si elle sort du métier :
+  // sans quoi elle disparaîtrait de l'écran tout en comptant au total.
+  if ($('#filtre').value === 'tout') return true;
+  if (coches.has(n)) return true;
+  if (D.sauvetage && n === D.sauvetage.cible && hauteurRetenue()) return true;
+  const code = $('#met').value;
+  const liste = D.pertinentes && D.pertinentes[code];
+  return liste ? liste.includes(n) : true;
+}
+
+// Les descriptions viennent du markdown des fiches : le gras y est
+// écrit `**ainsi**`. Sans conversion, les astérisques s'affichent en
+// clair dans la grille.
+function gras(t) {
+  return String(t)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g, '<em>$1</em>');
+}
+
+function nu(t) { return String(t).replace(/\*/g, ''); }
+
+const MIROIR = { entreprise: 'employeur', nom_chantier: 'chantier' };
+function suivreHaut() {
+  for (const [code, src] of Object.entries(MIROIR)) {
+    const haut = document.getElementById(src);
+    if (haut) haut.addEventListener('input', () => {
+      const el = document.getElementById('fc_' + code);
+      if (el) { el.value = haut.value.trim(); compteFiche(); }
+    });
+  }
+}
+function dessineFiche() {
+  const F = ficheCourante();
+  if (!F.length) return;
+
+  // Collapsible tab "Program personalization": closed at first, keeps its
+  // state when the sheet is redrawn (context change).
+  const avant = document.getElementById('perso');
+  const ouvert = avant ? avant.open : false;
+  const h = [`<details class="theme" id="perso" style="margin:0" ${ouvert ? 'open' : ''}>
+    <summary>Program personalization
+      <span class="jauge" id="cfiche"></span>
+    </summary>
+    <div class="avis" style="margin:0;border-radius:0">
+      This information appears <strong>as is</strong> in the program:
+      site identification page, emergency response organization and
+      harassment prevention policy. Everything is optional except the
+      legal name; a field left blank stays to be filled in by hand.
+    </div>`];
+
+  for (const f of F) {
+    const id = 'fc_' + f.code;
+    if (f.groupe) h.push(`<div style="padding:12px 16px 4px;font-weight:bold;
+      color:var(--ardoise);border-top:1px solid var(--trait);background:var(--trame)">${f.groupe}</div>`);
+    let champ;
+    if (f.type === 'oui_non') {
+      champ = `<label style="font-size:13px;margin-right:18px;cursor:pointer">
+          <input type="radio" name="${id}" value="oui"> Yes</label>
+        <label style="font-size:13px;cursor:pointer">
+          <input type="radio" name="${id}" value="non" checked> No</label>`;
+    } else if (f.type === 'date') {
+      champ = `<input type="date" id="${id}" style="max-width:190px">`;
+    } else if (f.type === 'nombre') {
+      champ = `<input type="number" id="${id}" min="1"
+                 style="max-width:120px" placeholder="N/A">`;
+    } else {
+      champ = `<input type="text" id="${id}" style="width:100%;max-width:420px"
+                 placeholder="${f.requis ? 'Required' : 'Optional'}">`;
+    }
+    h.push(`<div class="ligne" style="grid-template-columns:1fr">
+      <div>
+        <div class="titre">${gras(f.libelle)}${f.requis ?
+          '&nbsp;&nbsp;<span class="oblig">required</span>' : ''}</div>
+        ${f.note ? `<div class="desc">${gras(f.note)}</div>` : ''}
+        <div style="margin-top:7px">${champ}</div>
+      </div>
+    </div>`);
+  }
+  h.push('</details>');
+  $('#fiche').innerHTML = h.join('');
+
+  // **Raison sociale et nom du chantier : repris de la section du haut.**
+  // Saisis une seule fois; l'onglet les affiche en lecture seule.
+  for (const [code, src] of Object.entries(MIROIR)) {
+    const el = document.getElementById('fc_' + code), haut = document.getElementById(src);
+    if (!el || !haut) continue;
+    el.readOnly = true; el.value = haut.value.trim();
+    el.style.background = 'var(--trame)'; el.placeholder = 'Copied from the top section'; el.title = 'Copied from the top section';
+  }
+
+  for (const f of F) {
+    const el = document.getElementById('fc_' + f.code);
+    if (el) el.addEventListener('input', compteFiche);
+    for (const r of document.getElementsByName('fc_' + f.code)) {
+      r.addEventListener('change', compteFiche);
+      if (f.situation) r.addEventListener('change', () => {
+        liensFiche(); sauvetageAuto(); dessine();
+      });
+    }
+  }
+  compteFiche();
+}
+
+function compteFiche() {
+  const F = ficheCourante();
+  let remplis = 0;
+  for (const f of F) {
+    const v = champFiche(f);
+    if (v && v !== 'non') remplis++;
+  }
+  const e = $('#cfiche');
+  if (e) e.innerHTML = `<b>${remplis}</b> of ${F.length}`;
+}
+
+function champFiche(f) {
+  if (f.type === 'oui_non') {
+    const c = document.querySelector(`input[name="fc_${f.code}"]:checked`);
+    return c ? c.value : '';
+  }
+  const el = document.getElementById('fc_' + f.code);
+  return el ? el.value.trim() : '';
+}
+
+function fiche() {
+  const out = {};
+  for (const f of ficheCourante()) out[f.code] = champFiche(f);
+  return out;
+}
+
+function dessineTronc() {
+  const T = D.tronc_existant || [];
+  if (!T.length) return;
+
+  const h = [`<div class="theme" style="margin-bottom:22px">
+    <div class="tete" style="cursor:default">
+      <span>What you already have</span>
+      <span class="compte" id="ctronc"></span>
+    </div>
+    <div class="avis" style="margin:0;border-radius:0">
+      A prevention program includes policies and procedures that may
+      <strong>already exist</strong> in your company. Tell us which ones,
+      and we will provide the others.
+    </div>`];
+
+  const code = $('#met').value;
+  const liste = (D.pertinentes && D.pertinentes[code]) || null;
+
+  for (const t of T) {
+    // **Un programme rattaché à une section ne concerne pas tout le monde.**
+    // Inutile de demander à un peintre s'il a un programme d'espace clos
+    // s'il n'en rencontre jamais.
+    if (t.section && liste) {
+      const rencontre = Object.keys(D.situations).some(n =>
+        liste.includes(+n) && D.section[n] &&
+        (D.section[n] === t.section ||
+         D.section[n].split('/')[0] === t.section));
+      if (!rencontre) continue;
+    }
+    const id = 'tr_' + t.code;
+    // Le plan de mesures d'urgence est propre au chantier : il se remplit
+    // en tout temps, il ne se remplace pas.
+    if (t.toujours) {
+      h.push(`<div class="ligne" style="grid-template-columns:1fr">
+        <div>
+          <div class="titre">${gras(t.titre)}</div>
+          <div class="desc">${gras(t.note)}</div>
+        </div>
+      </div>`);
+      continue;
+    }
+    h.push(`<div class="ligne" style="grid-template-columns:1fr">
+      <div>
+        <div class="titre">${gras(t.titre)}${t.obligatoire ?
+          '&nbsp;&nbsp;<span class="oblig">mandatory</span>' : ''}</div>
+        <div class="desc">${gras(t.note)}</div>
+        <div style="margin-top:8px;display:flex;gap:18px;flex-wrap:wrap">
+          <label style="font-size:13px;cursor:pointer">
+            <input type="radio" name="${id}" value="fournir" checked>
+            I do not have one: <strong>provide yours</strong></label>
+          <label style="font-size:13px;cursor:pointer">
+            <input type="radio" name="${id}" value="garder">
+            I have my own and will keep it</label>
+          <label style="font-size:13px;cursor:pointer">
+            <input type="radio" name="${id}" value="reviser">
+            I have my own: <strong>to be revised</strong></label>
+        </div>
+        <div id="imp_${t.code}" style="display:none;margin-top:8px;
+             padding:9px 12px;background:#FDF5E4;border-left:3px solid #F6A51A">
+          <label style="font-size:13px;cursor:pointer">
+            <input type="checkbox" id="chk_${t.code}">
+            <strong>I want to import it</strong> so that it is included in
+            the program</label>
+          <div style="font-size:12px;color:#666;margin-top:4px">
+            The upload will take place at the next step.</div>
+        </div>
+      </div>
+    </div>`);
+  }
+  h.push('</div>');
+  $('#tronc').innerHTML = h.join('');
+
+  for (const t of T) {
+    if (t.toujours) continue;
+    for (const r of document.getElementsByName('tr_' + t.code)) {
+      r.addEventListener('change', () => {
+        // La question de l'import n'a de sens que pour qui possède déjà le
+        // document : « je n'en ai pas » n'a rien à importer.
+        const c = document.querySelector(
+          `input[name="tr_${t.code}"]:checked`);
+        const bloc = document.getElementById('imp_' + t.code);
+        const a = c && (c.value === 'garder' || c.value === 'reviser');
+        if (bloc) bloc.style.display = a ? 'block' : 'none';
+        if (!a) {
+          const chk = document.getElementById('chk_' + t.code);
+          if (chk) chk.checked = false;
+        }
+        compteTronc();
+      });
+    }
+  }
+  compteTronc();
+}
+
+function compteTronc() {
+  const T = (D.tronc_existant || []).filter(t => !t.toujours);
+  let fournis = 0;
+  for (const t of T) {
+    const c = document.querySelector(`input[name="tr_${t.code}"]:checked`);
+    if (c && c.value === 'fournir') fournis++;
+  }
+  const e = $('#ctronc');
+  if (e) e.innerHTML = `<b>${fournis}</b> to provide out of ${T.length}`;
+}
+
+function tronc() {
+  const out = {};
+  for (const t of (D.tronc_existant || [])) {
+    if (t.toujours) { out[t.code] = { reponse: 'toujours' }; continue; }
+    const c = document.querySelector(`input[name="tr_${t.code}"]:checked`);
+    const chk = document.getElementById('chk_' + t.code);
+    const r = c ? c.value : 'fournir';
+    out[t.code] = { reponse: r, importer: !!(chk && chk.checked) };
+  }
+  return out;
+}
+
+function dessine() {
+  const html = [];
+  for (const [theme, nums] of Object.entries(D.themes)) {
+    const dispo = nums.filter(visible);
+    if (!dispo.length) continue;
+    const pris = dispo.filter(n => coches.has(n)).length;
+    html.push(`<details class="theme" ${pris ? 'open' : ''}>
+      <summary>${theme}
+        <span class="jauge"><b>${pris}</b> of ${dispo.length}</span>
+      </summary>`);
+    for (const n of dispo) {
+      const s = D.situations[n];
+      if (!s) continue;
+      const ob = obligatoires.has(n);
+      const niv = (s.n || '').split(' ')[0];
+      html.push(`<div class="ligne ${ob ? 'obl' : ''}">
+        <input type="checkbox" data-n="${n}" ${coches.has(n) ? 'checked' : ''}
+               ${ob ? 'disabled' : ''} aria-label="${nu(s.t)}">
+        <div class="num">${n}</div>
+        <div>
+          <div class="titre">${gras(s.t)}${ob ? ' <span class="verrou">mandatory</span>' : ''}${(D.sauvetage && n === D.sauvetage.cible) ? ' <span class="verrou" style="background:#FDF1DC;color:#8A5A00">added with work at height, uncheck if it does not apply</span>' : ''}</div>
+          <div class="desc">${gras(s.d)}</div>
+        </div>
+        <div class="risque ${niv}">${s.n}</div>
+      </div>`);
+    }
+    html.push('</details>');
+  }
+  // combien de situations le filtre écarte
+  if ($('#filtre').value === 'metier' && $('#met').value) {
+    const ctx = ctxEff();
+    const total = Object.keys(D.situations).filter(n => {
+      const c = D.contexte[n];
+      return c === 'les deux' || c === ctx;
+    }).length;
+    const montrees = Object.keys(D.situations).filter(n => visible(+n)).length;
+    const ecartees = total - montrees;
+    if (ecartees > 0) {
+      html.push(`<div class="avis" style="margin-top:16px;background:#F4F4F4;
+        border-left-color:#999;font-size:13px">
+        <strong>${ecartees} situation${ecartees > 1 ? 's' : ''}</strong>
+        ${ecartees > 1 ? 'do not concern' : 'does not concern'} this trade and
+        ${ecartees > 1 ? 'are hidden' : 'is hidden'}.
+        Choose <em>All situations</em> to see them.</div>`);
+    }
+  }
+
+  $('#liste').innerHTML = html.join('');
+  $('#liste').querySelectorAll('input[type=checkbox]').forEach(i => {
+    i.addEventListener('change', e => {
+      const n = +e.target.dataset.n;
+      e.target.checked ? coches.add(n) : coches.delete(n);
+      if (D.sauvetage && n === D.sauvetage.cible) {
+        sauvetageRetire = !e.target.checked;
+      } else if (D.sauvetage && D.sauvetage.hauteur.includes(n)
+                 && e.target.checked && !coches.has(D.sauvetage.cible)
+                 && !sauvetageRetire) {
+        sauvetageAuto(); dessine(); return;
+      }
+      compte(); majJauges();
+    });
+  });
+  compte();
+}
+
+function majJauges() {
+  $('#liste').querySelectorAll('.theme').forEach(d => {
+    const b = d.querySelectorAll('input[type=checkbox]');
+    const pris = [...b].filter(i => i.checked).length;
+    d.querySelector('.jauge').innerHTML = `<b>${pris}</b> of ${b.length}`;
+  });
+}
+
+function compte() {
+  const n = coches.size;
+  $('#n').textContent = n;
+  $('#s').textContent = n > 1 ? 's' : '';
+  const m = metiersDuContexte()[$('#met').value];
+  const emp = $('#employeur').value.trim();
+  $('#etat').textContent = m
+    ? `${emp ? emp + ': ' : ''}${m.nom}: ${n} situation${n > 1 ? 's' : ''} `
+      + `selected.`
+    : 'Choose a trade to begin.';
+}
+
+function selection() {
+  const m = metiersDuContexte()[$('#met').value];
+  return {
+    contexte: $('#ctx').value,
+    metier: $('#met').value,
+    metier_nom: m ? m.nom : '',
+    employeur: $('#employeur').value.trim(),
+    chantier: $('#chantier').value.trim(),
+    date_creation: $('#date').value || new Date().toISOString().slice(0, 10),
+    rempli_par: $('#qui').value.trim(),
+    date: new Date().toISOString().slice(0, 10),
+    langue: 'en',
+    situations: [...coches].sort((a, b) => a - b),
+    tronc: tronc(),
+    fiche_chantier: fiche()
+  };
+}
+
+$('#ctx').addEventListener('change', () => {
+  // **Le maître d'œuvre ne coche pas un métier.** Il coche les corps de
+  // métier présents sur son chantier : sa grille est une grille
+  // d'organisation, non de risques propres.
+  const mo = $('#ctx').value === 'maitre_oeuvre';
+  const lab = document.querySelector('label[for="met"]');
+  if (lab) lab.textContent = mo ? 'Main trade on the site'
+                                : 'Trade or sector';
+  const avis = $('#avis_mo');
+  if (avis) avis.style.display = mo ? 'block' : 'none';
+  remplirMetiers();
+  dessineFiche();
+  applique();
+  dessineTronc();
+});
+$('#met').addEventListener('change', () => { applique(); dessineTronc(); });
+document.addEventListener('change', () => { CODE = ''; }, true);
+document.addEventListener('input', () => { CODE = ''; }, true);
+$('#filtre').addEventListener('change', dessine);
+
+$('#ouvrir').addEventListener('click', () => {
+  const d = $('#liste').querySelectorAll('details');
+  const tout = [...d].every(x => x.open);
+  d.forEach(x => x.open = !tout);
+  $('#ouvrir').textContent = tout ? 'Expand all' : 'Collapse all';
+});
+
+// Le texte est le même partout : affichage, presse-papiers, courriel, fichier.
+function texteTronc() {
+  const T = D.tronc_existant || [];
+  const r = tronc();
+  const LIB = {
+    fournir: 'to be provided by the ACQ',
+    garder: 'the employer keeps its own',
+    reviser: 'to be revised',
+    toujours: 'to be completed, specific to the site',
+  };
+  const L = ['WHAT THE EMPLOYER ALREADY HAS', ''];
+  for (const t of T) {
+    const x = r[t.code] || {};
+    const imp = x.importer ? ': TO IMPORT' : '';
+    L.push(`  ${nu(t.titre)}: ${LIB[x.reponse] || x.reponse}${imp}`);
+  }
+  return L.join('\n') + '\n';
+}
+
+function texteSelection() {
+  const s = selection();
+  return CODE ? blocCourriel(s, CODE) : JSON.stringify(s, null, 1);
+}
+
+function montrerRepli(message) {
+  $('#sortie').value = texteSelection();
+  $('#repli').style.display = 'block';
+  $('#repli').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (message) $('#etat').textContent = message;
+}
+
+async function copier(bouton) {
+  const t = texteSelection();
+  try {
+    await navigator.clipboard.writeText(t);
+    const avant = bouton.textContent;
+    bouton.textContent = 'Copied';
+    setTimeout(() => bouton.textContent = avant, 1800);
+    return true;
+  } catch (e) {
+    // Le presse-papiers est refusé hors HTTPS et depuis un lecteur réseau.
+    // On sélectionne le texte pour que Ctrl+C fonctionne.
+    const z = $('#sortie');
+    z.focus(); z.select();
+    try { document.execCommand('copy'); return true; } catch (e2) { return false; }
+  }
+}
+
+$('#afficher').addEventListener('click', () => {
+  if (!coches.size) { $('#etat').textContent = 'No situation selected.'; return; }
+  montrerRepli('Selection shown below.');
+});
+
+$('#copier2') && $('#copier2').addEventListener('click', async e => {
+  const ok = await copier(e.target);
+  if (!ok) $('#etat').textContent = 'Select the text and press Ctrl+C.';
+});
+
+// La base de l'artifact : la sélection s'y dépose et le conseiller la lit
+// sans que personne n'ait à copier quoi que ce soit. `use` peut répondre
+// `null` — la page doit fonctionner sans, d'où le repli sur l'affichage.
+let BASE = null;
+let envoiEnCours = false, derniereEnvoyee = null;
+// Standalone version: no database, the request is sent by email.
+
+const COURRIEL = '';
+// **Standalone form: direct sending.** "Submit" sends the request to
+// Web3Forms, which forwards it by email to the requests mailbox.
+// If it fails (network, blocking), the fallback message is shown.
+const CLE_WEB3FORMS = '4bae4edf-b9ed-41d9-b08e-12e2941fb659';
+async function envoyerWeb3(s) {
+  try {
+    const r = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        access_key: CLE_WEB3FORMS,
+        subject: sujet(s),
+        from_name: 'Formulaire PP (EN)',
+        message: blocCourriel(s, CODE),
+        botcheck: ''
+      })
+    });
+    const j = await r.json().catch(() => ({}));
+    if (r.ok && j.success !== false) return true;
+    RAISON_ECHEC = 'The sending service refused the request (code ' + r.status + ').';
+    return false;
+  } catch (e) {
+    // embedded preview, corporate network or firewall: the connection did not take place
+    RAISON_ECHEC = enApercu()
+      ? 'The form is open in a preview (Teams, Outlook or other), where sending is blocked. '
+        + 'Click Save file, then open the saved file in Chrome or Edge and submit it again.'
+      : 'The sending service cannot be reached from this page or this network. '
+        + 'Open the file in Chrome or Edge, or try from another network.';
+    return false;
+  }
+}
+let RAISON_ECHEC = '';
+// Embedded preview: page inside a frame (Teams, Outlook, file preview) or an
+// address that is neither a file nor a site. The warning appears on opening.
+const URL_EN_LIGNE = 'https://programmedeprevention.github.io/en/';
+function enApercu() {
+  let cadre;
+  try { cadre = window.self !== window.top; } catch (e) { cadre = true; }
+  const p = location.protocol;
+  return cadre || !(p === 'file:' || p === 'http:' || p === 'https:');
+}
+(function avertirApercu() {
+  if (!enApercu()) return;
+  if (URL_EN_LIGNE && URL_EN_LIGNE.indexOf('__') !== 0) {
+    // Known online version: the form is hidden, automatic opening is attempted
+    // (often blocked by the preview), and the button stays.
+    const v = document.getElementById('voile');
+    document.getElementById('voile_lien').href = URL_EN_LIGNE;
+    document.getElementById('voile_adresse').textContent = URL_EN_LIGNE;
+    v.style.display = 'flex';
+    try { window.open(URL_EN_LIGNE, '_blank', 'noopener'); } catch (e) {}
+    return;
+  }
+  document.getElementById('apercu').style.display = 'block';
+})();
+let CODE = '';
+function b64url(octets) {
+  let t = '';
+  for (let i = 0; i < octets.length; i += 0x8000)
+    t += String.fromCharCode.apply(null, octets.subarray(i, i + 0x8000));
+  return btoa(t).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+async function encoder(s) {
+  const brut = new TextEncoder().encode(JSON.stringify(s));
+  try {
+    const flux = new Blob([brut]).stream().pipeThrough(new CompressionStream('deflate-raw'));
+    const c = new Uint8Array(await new Response(flux).arrayBuffer());
+    return 'PPACQ1:' + b64url(c);
+  } catch (e) {
+    return 'PPACQ0:' + b64url(brut);   // browser without compression
+  }
+}
+function decoupe(code) { return code.match(/.{1,70}/g).join('\n'); }
+// The subject keeps the French prefix: the requests mailbox filters on it.
+function sujet(s) {
+  return 'Demande PP : ' + (s.employeur || 'no name') + ', ' + (s.metier_nom || s.metier || '') + ' (EN)';
+}
+function blocCourriel(s, code) {
+  const CTX = { chantier: 'Construction site', etablissement: 'Establishment', maitre_oeuvre: 'Principal contractor' };
+  return ['Hello,', '', 'Here is my prevention program request.', '',
+    'Employer: ' + s.employeur,
+    'Trade: ' + (s.metier_nom || s.metier),
+    'Context: ' + (CTX[s.contexte] || s.contexte),
+    'Situations selected: ' + s.situations.length,
+    'Completed by: ' + (s.rempli_par || ''),
+    'Language: English', '',
+    '[DEBUT DE LA DEMANDE]', decoupe(code), '[FIN DE LA DEMANDE]'].join('\n');
+}
+function lienCourriel(s, code) {
+  return 'mailto:' + COURRIEL + '?subject=' + encodeURIComponent(sujet(s))
+    + '&body=' + encodeURIComponent(blocCourriel(s, code));
+}
+function telecharger(s) {
+  try {
+    const b = new Blob([JSON.stringify(s, null, 1)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(b);
+    const marque = (s.employeur || s.metier || 'sst')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^A-Za-z0-9]+/g, '_').slice(0, 32);
+    a.download = `PP_request_${marque}_${s.date}.json`;
+    a.style.display = 'none';
+    document.body.appendChild(a); a.click();
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(a.href); }, 400);
+  } catch (e) { /* the displayed code remains available */ }
+}
+
+// **Les champs requis le sont vraiment.** L'étiquette « requis » était
+// décorative : une demande sans raison sociale partait quand même, et le
+// programme sortait sans nom d'employeur.
+function manquants() {
+  const liste = [];
+  const emp = $('#employeur');
+  if (!emp.value.trim()) liste.push([emp, 'Legal name']);
+  return liste;
+}
+
+$('#soumettre').addEventListener('click', async () => {
+  document.querySelectorAll('.manque').forEach(e => {
+    e.classList.remove('manque'); e.style.borderColor = '';
+  });
+  const m = manquants();
+  if (m.length) {
+    for (const [e] of m) {
+      const d = e.closest('details'); if (d) d.open = true;   // field inside a closed tab
+      e.classList.add('manque'); e.style.borderColor = '#C0392B';
+    }
+    $('#etat').textContent = 'Required field to complete: '
+      + [...new Set(m.map(x => x[1]))].join(', ') + '.';
+    m[0][0].scrollIntoView({block: 'center'});
+    m[0][0].focus();
+    return;
+  }
+  if (!coches.size) {
+    $('#etat').textContent = 'No situation selected.';
+    return;
+  }
+  const s = selection();
+
+  // **Sending by email.** The request is encoded (compressed, then base64)
+  // and sent to the ACQ requests mailbox.
+  if (envoiEnCours) return;
+  envoiEnCours = true;
+  try {
+    CODE = await encoder(s);
+    $('#etat').textContent = 'Sending…';
+    $('#soumettre').disabled = true;
+    if (await envoyerWeb3(s)) {
+      $('#repli').style.display = 'none';
+      $('#envoye').style.display = 'block';
+      $('#envoye').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      $('#etat').textContent = 'Request sent. Thank you!';
+      $('#soumettre').textContent = 'Request sent';
+    } else {
+      $('#soumettre').disabled = false;
+      montrerRepli('The request could not be sent: check your connection and try again.');
+      const raison = document.getElementById('raison_echec');
+      if (raison) raison.textContent = RAISON_ECHEC;
+    }
+  } finally {
+    envoiEnCours = false;
+  }
+});
+
+$('#exporter').addEventListener('click', () => {
+  const s = selection();
+  if (!s.situations.length) {
+    $('#etat').textContent = 'No situation selected.';
+    return;
+  }
+  // Le téléchargement échoue sans bruit depuis un lecteur réseau ou sous
+  // certaines politiques d'entreprise : on affiche donc toujours le repli,
+  // puis on tente le fichier.
+  montrerRepli();
+  try {
+    const b = new Blob([JSON.stringify(s, null, 1)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(b);
+    // le nom du fichier porte l'employeur : deux sélections du même métier
+    // pour deux clients ne s'écrasent pas dans le dossier de téléchargement
+    const marque = (s.employeur || s.metier || 'ohs')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^A-Za-z0-9]+/g, '_').slice(0, 32);
+    a.download = `selection_${marque}_${s.date}.json`;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(a.href); }, 400);
+    $('#etat').textContent = 'File saved. If nothing happened, '
+                           + 'copy the text below.';
+  } catch (e) {
+    $('#etat').textContent = 'The browser refused to save the file: '
+                           + 'copy the text below.';
+  }
+});
+
+$('#employeur').addEventListener('input', compte);
+
+// **Une raison sociale, saisie une fois.** Le champ de la fiche reprend
+// celui de l'en-tête tant qu'on ne l'a pas modifié lui-même.
+$('#employeur').addEventListener('input', () => {
+  const e = document.getElementById('fc_entreprise');
+  if (e && !e.dataset.touche) e.value = $('#employeur').value;
+});
+// la fiche se redessine au changement de contexte : on y reporte la
+// raison sociale déjà saisie
+{
+  const _dessineFiche = dessineFiche;
+  dessineFiche = function () {
+    _dessineFiche();
+    const e = document.getElementById('fc_entreprise');
+    if (e && !e.value) e.value = $('#employeur').value;
+  };
+}
+document.addEventListener('input', ev => {
+  if (ev.target && ev.target.id === 'fc_entreprise') {
+    ev.target.dataset.touche = '1';
+    if (!$('#employeur').value.trim()) {
+      $('#employeur').value = ev.target.value; compte();
+    }
+  }
+});
+$('#date').value = new Date().toISOString().slice(0, 10);
+
+remplirMetiers();
+suivreHaut();
+dessineFiche();
+dessineTronc();
+dessine();
+</script>
+</body>
+</html>
