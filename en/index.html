@@ -188,6 +188,10 @@ mark { background: #FDE6B8; color: inherit; padding: 0 1px; border-radius: 2px; 
       <span id="voile_adresse" style="user-select:all;color:#222"></span></p>
   </div>
 </div>
+<!-- **Reprise par le conseiller** : visible seulement en arrivant par un lien #reprise= -->
+<div id="reprise" class="avis" style="display:none;margin:16px auto;max-width:1180px;background:#FDF5E4;border-left:4px solid #F6A51A">
+  <strong>Revision of a request</strong><br>This form reopens the request from <strong id="rep_emp"></strong> dated <span id="rep_date"></span>. Review the situations and the personalization, enter your name under “Completed by”, then submit: a new document will be produced and the original stays as is.
+</div>
 <div class="reglages">
   <div class="reglages-i">
     <!-- **Première question : PPM, PPI, PAM ou PAI**, puis la langue du document produit -->
@@ -1100,11 +1104,117 @@ document.addEventListener('input', ev => {
 });
 $('#date').value = new Date().toISOString().slice(0, 10);
 
+// **Reprise d'une demande par le conseiller.** Le lien de reprise (#reprise=
+// suivi du code de la demande, remis au conseiller après la production)
+// rouvre le formulaire avec les réponses déjà données. Le conseiller révise,
+// inscrit son nom, puis soumet : une nouvelle demande part, marquée
+// « révision ». Sans ce lien, le formulaire s'ouvre vide, comme d'habitude.
+let REPRISE = null, REPRISE_SIT = null;
+// **Changement de type ou de métier en cours de reprise** : la grille repart
+// des situations du métier, puis reprend celles de la demande qui
+// s'appliquent au nouveau contexte (chantier ou établissement).
+{
+  const _applique = applique;
+  applique = function () {
+    _applique();
+    if (!REPRISE_SIT) return;
+    const ctx = ctxEff();
+    for (const n of REPRISE_SIT) {
+      const c = D.contexte[n];
+      if (D.situations[n] && (c === 'les deux' || c === ctx)
+          && !(estPA() && (D.retirees_pa || []).includes(n))) coches.add(n);
+    }
+    sauvetageAuto();
+    dessine();
+  };
+}
+async function decoderCode(code) {
+  const [v, t] = code.split(':');
+  const b64 = t.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - t.length % 4) % 4);
+  let brut = Uint8Array.from(atob(b64), ch => ch.charCodeAt(0));
+  if (v === 'PPACQ1') {
+    const flux = new Blob([brut]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+    brut = new Uint8Array(await new Response(flux).arrayBuffer());
+  }
+  return JSON.parse(new TextDecoder().decode(brut));
+}
+async function reprendre() {
+  const m = location.hash.match(/^#reprise=(PPACQ[01]:[A-Za-z0-9_-]+)/);
+  if (!m) return;
+  let s;
+  try { s = await decoderCode(m[1]); }
+  catch (e) { $('#etat').textContent = "Unreadable revision link: the form opens empty."; return; }
+  REPRISE = { employeur: s.employeur || '', date: s.date || '', document: s.document || '',
+              rempli_par: s.rempli_par || '' };
+  REPRISE_SIT = s.situations || [];
+  if (s.document) $('#doc').value = s.document;
+  if (s.langue) $('#langue').value = s.langue;
+  $('#ctx').value = estPA() ? 'etablissement' : (s.contexte || 'chantier');
+  $('#ctx').disabled = estPA();
+  remplirMetiers();
+  $('#met').value = s.metier || '';
+  $('#employeur').value = s.employeur || '';
+  $('#chantier').value = s.chantier || '';
+  dessineFiche();
+  const fc = s.fiche_chantier || {};
+  for (const f of ficheCourante()) {
+    const v = fc[f.code];
+    if (v === undefined || v === null || v === '') continue;
+    if (f.type === 'oui_non') {
+      const radio = document.querySelector(`input[name="fc_${f.code}"][value="${v}"]`);
+      if (radio) radio.checked = true;
+    } else {
+      const el = document.getElementById('fc_' + f.code);
+      if (el && !el.readOnly) el.value = v;
+    }
+  }
+  applique();
+  // les situations de la demande, plus celles qui restent obligatoires
+  coches = new Set([...(s.situations || []), ...obligatoires]);
+  sauvetageRetire = !!(D.sauvetage && hauteurRetenue() && !coches.has(D.sauvetage.cible));
+  dessineTronc();
+  for (const [code, t] of Object.entries(s.tronc || {})) {
+    const radio = document.querySelector(`input[name="tr_${code}"][value="${t.reponse}"]`);
+    if (radio) radio.checked = true;
+    const chk = document.getElementById('chk_' + code);
+    if (chk) chk.checked = !!t.importer;
+  }
+  compteTronc(); compteFiche(); dessine(); compte();
+  $('#rep_emp').textContent = REPRISE.employeur;
+  $('#rep_date').textContent = REPRISE.date;
+  $('#reprise').style.display = 'block';
+  $('#qui').value = '';
+  $('#qui').placeholder = "Advisor's name (required)";
+}
+{
+  const _selection = selection;
+  selection = function () {
+    const s = _selection();
+    if (REPRISE) { s.reprise_de = REPRISE; s.conseiller = $('#qui').value.trim(); }
+    return s;
+  };
+  const _manquants = manquants;
+  manquants = function () {
+    const liste = _manquants();
+    if (REPRISE && !$('#qui').value.trim()) liste.push([$('#qui'), "Completed by (advisor)"]);
+    return liste;
+  };
+  const _sujet = sujet;
+  sujet = function (s) { return _sujet(s) + (s.reprise_de ? ' (revision)' : ''); };
+  const _bloc = blocCourriel;
+  blocCourriel = function (s, code) {
+    const t = _bloc(s, code);
+    if (!s.reprise_de) return t;
+    return t.replace('\n\n[', '\nRevision of the request dated ' + s.reprise_de.date + ', by ' + (s.conseiller || '') + '\n\n[');
+  };
+}
+
 remplirMetiers();
 suivreHaut();
 dessineFiche();
 dessineTronc();
 dessine();
+reprendre();
 </script>
 </body>
 </html>
