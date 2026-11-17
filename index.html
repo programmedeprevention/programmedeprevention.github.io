@@ -218,6 +218,8 @@ mark { background: #FDE6B8; color: inherit; padding: 0 1px; border-radius: 2px; 
         <option value="chantier">Chantier de construction</option>
         <option value="etablissement">Établissement</option>
         <option value="maitre_oeuvre">Chantier : maître d'œuvre</option>
+        <option value="chantier_etablissement">Chantier et établissement</option>
+        <option value="mo_etablissement">Chantier et établissement : maître d'œuvre</option>
       </select>
     </div>
     <div>
@@ -261,6 +263,14 @@ mark { background: #FDE6B8; color: inherit; padding: 0 1px; border-radius: 2px; 
 </div>
 
 <main>
+  <div class="avis" id="avis_double" style="display:none;background:#EEF5FB;
+       border-left-color:#2F6FA7">
+    <strong>Deux programmes</strong> seront produits à partir de ce questionnaire,
+    chacun dans son zip : le <strong>programme du chantier</strong>, avec la
+    trousse d'accueil, et le <strong>programme de l'établissement</strong>.
+    Chacun a son plan d'action; les politiques sont à signer dans les deux.
+    La grille montre les situations des deux contextes.
+  </div>
   <div class="avis" id="avis_mo" style="display:none;background:#FDF5E4;
        border-left-color:#F6A51A">
     Vous produisez le <strong>programme de prévention du chantier</strong>.
@@ -343,8 +353,14 @@ function metiersDuContexte() {
 // **Le maître d'œuvre est sur un chantier.** Il voit les situations et les
 // métiers du chantier; seul son tronc diffère.
 function ctxEff() {
-  return $('#ctx').value === 'maitre_oeuvre' ? 'chantier' : $('#ctx').value;
+  if (estDouble()) return 'double';
+  return estMO() ? 'chantier' : $('#ctx').value;
 }
+// **Chantier et établissement** : une seule demande, deux programmes (deux zips).
+// La grille montre les situations des deux contextes; le maître d'œuvre garde la sienne.
+function estMO() { return ['maitre_oeuvre', 'mo_etablissement'].includes($('#ctx').value); }
+function estDouble() { return ['chantier_etablissement', 'mo_etablissement'].includes($('#ctx').value); }
+function dansCtx(c) { const x = ctxEff(); return c === 'les deux' || c === x || x === 'double'; }
 
 // **L'établissement a sa propre fiche d'identification.**
 // **Le document choisi fixe aussi le logo** : mutuelle (PPM, PAM) ou ACQ
@@ -353,8 +369,12 @@ function ctxEff() {
 function estPA() { return $('#doc') && ['pam', 'pai'].includes($('#doc').value); }
 function logoDoc() { return $('#doc') && ['ppi', 'pai'].includes($('#doc').value) ? 'general' : 'mutuelle'; }
 function ficheCourante() {
-  const F = $('#ctx').value === 'etablissement'
+  let F = $('#ctx').value === 'etablissement'
     ? (D.fiche_etablissement || []) : (D.fiche_chantier || []);
+  if (estDouble()) {
+    const vus = new Set(F.map(f => f.code));
+    F = F.concat((D.fiche_etablissement || []).filter(f => !vus.has(f.code)));
+  }
   // les champs marqués « pa » ne paraissent que pour un plan d'action
   return F.filter(f => !f.pa || estPA());
 }
@@ -373,8 +393,11 @@ function applique() {
     m[c].obl.forEach(n => { obligatoires.add(n); coches.add(n); });
     m[c].pre.forEach(n => coches.add(n));
   }
+  // chantier et établissement : on ajoute le métier d'établissement correspondant
+  const e = estDouble() && D.etab && D.etab['etab_' + c];
+  if (e) { e.obl.forEach(n => { obligatoires.add(n); coches.add(n); }); e.pre.forEach(n => coches.add(n)); }
   // le maître d'œuvre porte toujours l'exercice de sa fonction
-  if ($('#ctx').value === 'maitre_oeuvre') { obligatoires.add(261); coches.add(261); }
+  if (estMO()) { obligatoires.add(261); coches.add(261); }
   // **Plan d'action : sans droit de refus** (ni le RSS qu'il convoque)
   if (estPA()) (D.retirees_pa || []).forEach(n => { obligatoires.delete(n); coches.delete(n); });
   sauvetageRetire = false;
@@ -405,7 +428,7 @@ function surligner(html, mots) {
 
 function visible(n) {
   const ctx = ctxEff(), c = D.contexte[n];
-  if (c !== 'les deux' && c !== ctx) return false;
+  if (!dansCtx(c)) return false;
   const mots = motsCherches();
   if (mots.length) return correspond(n, mots);
 
@@ -420,7 +443,11 @@ function visible(n) {
   if (coches.has(n)) return true;
   if (D.sauvetage && n === D.sauvetage.cible && hauteurRetenue()) return true;
   const code = $('#met').value;
-  const liste = D.pertinentes && D.pertinentes[code];
+  let liste = D.pertinentes && D.pertinentes[code];
+  const le = estDouble() && D.pertinentes && D.pertinentes['etab_' + code];
+  if (liste && le) liste = liste.concat(le);
+  // l'établissement n'a pas de filtre par métier : ses situations restent visibles
+  if (estDouble() && !le && D.contexte[n] === 'etablissement') return true;
   return liste ? liste.includes(n) : true;
 }
 
@@ -704,7 +731,7 @@ function dessine() {
     const ctx = ctxEff();
     const total = Object.keys(D.situations).filter(n => {
       const c = D.contexte[n];
-      return c === 'les deux' || c === ctx;
+      return dansCtx(c);
     }).length;
     const montrees = Object.keys(D.situations).filter(n => visible(+n)).length;
     const ecartees = total - montrees;
@@ -786,12 +813,14 @@ $('#ctx').addEventListener('change', () => {
   // **Le maître d'œuvre ne coche pas un métier.** Il coche les corps de
   // métier présents sur son chantier : sa grille est une grille
   // d'organisation, non de risques propres.
-  const mo = $('#ctx').value === 'maitre_oeuvre';
+  const mo = estMO();
   const lab = document.querySelector('label[for="met"]');
   if (lab) lab.textContent = mo ? 'Métier principal du chantier'
                                 : 'Métier ou secteur';
   const avis = $('#avis_mo');
   if (avis) avis.style.display = mo ? 'block' : 'none';
+  const avd = $('#avis_double');
+  if (avd) avd.style.display = estDouble() ? 'block' : 'none';
   remplirMetiers();
   dessineFiche();
   applique();
@@ -953,7 +982,9 @@ function sujet(s) {
   return 'Demande PP : ' + (s.employeur || 'sans nom') + ', ' + (s.metier_nom || s.metier || '');
 }
 function blocCourriel(s, code) {
-  const CTX = { chantier: 'Chantier', etablissement: 'Établissement', maitre_oeuvre: "Maître d'œuvre" };
+  const CTX = { chantier: 'Chantier', etablissement: 'Établissement', maitre_oeuvre: "Maître d'œuvre",
+    chantier_etablissement: 'Chantier et établissement (deux programmes)',
+    mo_etablissement: "Chantier et établissement, maître d'œuvre (deux programmes)" };
   return ['Bonjour,', '', 'Voici ma demande de programme de prévention.', '',
     'Employeur : ' + s.employeur,
     'Métier : ' + (s.metier_nom || s.metier),
@@ -1123,7 +1154,7 @@ let REPRISE = null, REPRISE_SIT = null;
     const ctx = ctxEff();
     for (const n of REPRISE_SIT) {
       const c = D.contexte[n];
-      if (D.situations[n] && (c === 'les deux' || c === ctx)
+      if (D.situations[n] && dansCtx(c)
           && !(estPA() && (D.retirees_pa || []).includes(n))) coches.add(n);
     }
     sauvetageAuto();
@@ -1153,6 +1184,10 @@ async function reprendre() {
   if (s.langue) $('#langue').value = s.langue;
   $('#ctx').value = estPA() ? 'etablissement' : (s.contexte || 'chantier');
   $('#ctx').disabled = estPA();
+  // avis du maître d'œuvre et du double programme, comme au changement de type
+  { const am = $('#avis_mo'), ad = $('#avis_double');
+    if (am) am.style.display = estMO() ? 'block' : 'none';
+    if (ad) ad.style.display = estDouble() ? 'block' : 'none'; }
   remplirMetiers();
   $('#met').value = s.metier || '';
   $('#employeur').value = s.employeur || '';
