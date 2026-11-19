@@ -152,6 +152,7 @@ mark { background: #FDE6B8; color: inherit; padding: 0 1px; border-radius: 2px; 
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }
+.aide { font-weight: 400; color: #6b7280; }
 </style>
 </head>
 <body>
@@ -223,8 +224,16 @@ mark { background: #FDE6B8; color: inherit; padding: 0 1px; border-radius: 2px; 
       </select>
     </div>
     <div>
-      <label class="champ" for="met">Métier ou secteur</label>
+      <label class="champ" for="met">Métier principal</label>
       <select id="met"></select>
+    </div>
+    <div>
+      <label class="champ" for="met2">2e métier <span class="aide">(facultatif)</span></label>
+      <select id="met2"></select>
+    </div>
+    <div>
+      <label class="champ" for="met3">3e métier <span class="aide">(facultatif)</span></label>
+      <select id="met3"></select>
     </div>
     <div>
       <label class="champ" for="employeur">Raison sociale de l'employeur <span class="oblig">requis</span></label>
@@ -382,20 +391,30 @@ function ficheCourante() {
 function remplirMetiers() {
   const m = metiersDuContexte();
   const cles = Object.keys(m).sort((a, b) => m[a].nom.localeCompare(m[b].nom, 'fr'));
+  const opts = cles.map(c => `<option value="${c}">${m[c].nom}</option>`).join('');
+  for (const id of ['#met2', '#met3']) if ($(id)) $(id).innerHTML = '<option value="">Aucun</option>' + opts;
   $('#met').innerHTML = '<option value="">Choisir</option>' +
     cles.map(c => `<option value="${c}">${m[c].nom}</option>`).join('');
 }
 
+// **Jusqu'à trois métiers** : le principal, puis un 2e et un 3e facultatifs
+// (sans doublon). Leurs situations obligatoires et précochées s'additionnent.
+function metiersChoisis() {
+  const v = ['#met', '#met2', '#met3'].map(id => $(id) ? $(id).value : '').filter(Boolean);
+  return [...new Set(v)].slice(0, 3);
+}
 function applique() {
-  const c = $('#met').value, m = metiersDuContexte();
+  const m = metiersDuContexte();
   coches = new Set(); obligatoires = new Set();
-  if (c && m[c]) {
-    m[c].obl.forEach(n => { obligatoires.add(n); coches.add(n); });
-    m[c].pre.forEach(n => coches.add(n));
+  for (const c of metiersChoisis()) {
+    if (m[c]) {
+      m[c].obl.forEach(n => { obligatoires.add(n); coches.add(n); });
+      m[c].pre.forEach(n => coches.add(n));
+    }
+    // chantier et établissement : on ajoute le métier d'établissement correspondant
+    const e = estDouble() && D.etab && D.etab['etab_' + c];
+    if (e) { e.obl.forEach(n => { obligatoires.add(n); coches.add(n); }); e.pre.forEach(n => coches.add(n)); }
   }
-  // chantier et établissement : on ajoute le métier d'établissement correspondant
-  const e = estDouble() && D.etab && D.etab['etab_' + c];
-  if (e) { e.obl.forEach(n => { obligatoires.add(n); coches.add(n); }); e.pre.forEach(n => coches.add(n)); }
   // le maître d'œuvre porte toujours l'exercice de sa fonction
   if (estMO()) { obligatoires.add(261); coches.add(261); }
   // **Plan d'action : sans droit de refus** (ni le RSS qu'il convoque)
@@ -442,9 +461,10 @@ function visible(n) {
   if ($('#filtre').value === 'tout') return true;
   if (coches.has(n)) return true;
   if (D.sauvetage && n === D.sauvetage.cible && hauteurRetenue()) return true;
-  const code = $('#met').value;
-  let liste = D.pertinentes && D.pertinentes[code];
-  const le = estDouble() && D.pertinentes && D.pertinentes['etab_' + code];
+  const codes = metiersChoisis();
+  const P = D.pertinentes || {};
+  let liste = codes.some(c => P[c]) ? codes.flatMap(c => P[c] || []) : null;
+  const le = estDouble() && codes.some(c => P['etab_' + c]) ? codes.flatMap(c => P['etab_' + c] || []) : null;
   if (liste && le) liste = liste.concat(le);
   // l'établissement n'a pas de filtre par métier : ses situations restent visibles
   if (estDouble() && !le && D.contexte[n] === 'etablissement') return true;
@@ -588,8 +608,8 @@ function dessineTronc() {
       nous fournirons les autres.
     </div>`];
 
-  const code = $('#met').value;
-  const liste = (D.pertinentes && D.pertinentes[code]) || null;
+  const codesT = metiersChoisis(), PT = D.pertinentes || {};
+  const liste = codesT.some(c => PT[c]) ? codesT.flatMap(c => PT[c] || []) : null;
 
   for (const t of T) {
     // **Un programme rattaché à une section ne concerne pas tout le monde.**
@@ -775,7 +795,7 @@ function compte() {
   const n = coches.size;
   $('#n').textContent = n;
   $('#s').textContent = n > 1 ? 's' : '';
-  const m = metiersDuContexte()[$('#met').value];
+  const m = nomsMetiers() ? { nom: nomsMetiers() } : null;
   const emp = $('#employeur').value.trim();
   $('#etat').textContent = m
     ? `${emp ? emp + ' : ' : ''}${m.nom} : ${n} situation${n > 1 ? 's' : ''} `
@@ -783,12 +803,16 @@ function compte() {
     : 'Choisissez un métier pour commencer.';
 }
 
+function nomsMetiers() {
+  const m = metiersDuContexte();
+  return metiersChoisis().map(c => m[c] ? m[c].nom : c).join(', ');
+}
 function selection() {
-  const m = metiersDuContexte()[$('#met').value];
   return {
     contexte: $('#ctx').value,
     metier: $('#met').value,
-    metier_nom: m ? m.nom : '',
+    metier_nom: nomsMetiers(),
+    metiers: metiersChoisis(),
     employeur: $('#employeur').value.trim(),
     chantier: $('#chantier').value.trim(),
     date_creation: $('#date').value || new Date().toISOString().slice(0, 10),
@@ -816,7 +840,7 @@ $('#ctx').addEventListener('change', () => {
   const mo = estMO();
   const lab = document.querySelector('label[for="met"]');
   if (lab) lab.textContent = mo ? 'Métier principal du chantier'
-                                : 'Métier ou secteur';
+                                : 'Métier principal';
   const avis = $('#avis_mo');
   if (avis) avis.style.display = mo ? 'block' : 'none';
   const avd = $('#avis_double');
@@ -826,7 +850,8 @@ $('#ctx').addEventListener('change', () => {
   applique();
   dessineTronc();
 });
-$('#met').addEventListener('change', () => { applique(); dessineTronc(); });
+for (const id of ['#met', '#met2', '#met3'])
+  if ($(id)) $(id).addEventListener('change', () => { applique(); dessineTronc(); });
 document.addEventListener('change', () => { CODE = ''; }, true);
 document.addEventListener('input', () => { CODE = ''; }, true);
 $('#filtre').addEventListener('change', dessine);
@@ -1190,6 +1215,9 @@ async function reprendre() {
     if (ad) ad.style.display = estDouble() ? 'block' : 'none'; }
   remplirMetiers();
   $('#met').value = s.metier || '';
+  { const autres = (s.metiers || []).filter(c => c && c !== s.metier);
+    if ($('#met2')) $('#met2').value = autres[0] || '';
+    if ($('#met3')) $('#met3').value = autres[1] || ''; }
   $('#employeur').value = s.employeur || '';
   $('#chantier').value = s.chantier || '';
   dessineFiche();
